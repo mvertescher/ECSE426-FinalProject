@@ -438,6 +438,11 @@
               <FileType>1</FileType>
               <FilePath>../main.c</FilePath>
             </File>
+            <File>
+              <FileName>fputc_debug.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\fputc_debug.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

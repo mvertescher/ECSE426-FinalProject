@@ -79,8 +79,19 @@ typedef struct
 //#define EZ430_RF2500T_SPI_INT2_EXTI_PORT_SOURCE EXTI_PortSourceGPIOE
 //#define EZ430_RF2500T_SPI_INT2_EXTI_PIN_SOURCE  EXTI_PinSource1
 //#define EZ430_RF2500T_SPI_INT2_EXTI_IRQn        EXTI1_IRQn 	 
-	 
-	 
+
+
+/** @defgroup EZ430_RF2500T_Exported_Macros
+  * @{
+  */
+#define EZ430_RF2500T_CS_LOW()       GPIO_ResetBits(EZ430_RF2500T_SPI_CS_GPIO_PORT, EZ430_RF2500T_SPI_CS_PIN)
+#define EZ430_RF2500T_CS_HIGH()      GPIO_SetBits(EZ430_RF2500T_SPI_CS_GPIO_PORT, EZ430_RF2500T_SPI_CS_PIN)
+/**
+  * @}
+  */ 
+
+
+
 void EZ430_RF2500T_Init(EZ430_RF2500T_InitTypeDef *EZ430_RF2500T_InitStruct);
 //void LIS302DL_InterruptConfig(LIS302DL_InterruptConfigTypeDef *LIS302DL_InterruptConfigStruct);
 //void LIS302DL_FilterConfig(LIS302DL_FilterConfigTypeDef *LIS302DL_FilterConfigStruct);
@@ -89,8 +100,8 @@ void EZ430_RF2500T_Init(EZ430_RF2500T_InitTypeDef *EZ430_RF2500T_InitStruct);
 //void LIS302DL_DataRateCmd(uint8_t DataRateValue);
 //void LIS302DL_RebootCmd(void);
 //void LIS302DL_ReadACC(int32_t* out);
-void LIS302DL_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite);
-void LIS302DL_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead);
+void EZ430_RF2500T_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite);
+void EZ430_RF2500T_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead);
 
 
 uint32_t EZ430_RF2500T_TIMEOUT_UserCallback(void);

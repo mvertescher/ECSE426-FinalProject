@@ -4,6 +4,7 @@
 ".\obj\rtx_conf_cm.o"
 "../rtx_lib/ARM/RTX_CM4.lib"
 ".\obj\main.o"
+".\obj\fputc_debug.o"
 ".\obj\misc.o"
 ".\obj\stm32f4xx_adc.o"
 ".\obj\stm32f4xx_can.o"

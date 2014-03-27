@@ -13,6 +13,13 @@
 #include "ez430_rf2500t.h"
 
 __IO uint32_t  EZ430_RF2500T_Timeout = EZ430_RF2500T_FLAG_TIMEOUT;  
+/* Read/Write command */
+#define READWRITE_CMD              ((uint8_t)0x80) 
+/* Multiple byte read/write command */ 
+#define MULTIPLEBYTE_CMD           ((uint8_t)0x40)
+/* Dummy Byte Send by the SPI Master device in order to generate the Clock to the Slave device */
+#define DUMMY_BYTE                 ((uint8_t)0x00)
+/* */
 #define USE_DEFAULT_TIMEOUT_CALLBACK
 
 
@@ -100,7 +107,7 @@ static void EZ430_RF2500T_LowLevel_Init(void)
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
   SPI_Init(EZ430_RF2500T_SPI, &SPI_InitStructure);
 
-  /* Enable SPI1  */
+  /* Enable SPI2  */
   SPI_Cmd(EZ430_RF2500T_SPI, ENABLE);
 
   /* Configure GPIO PIN for Lis Chip select */
@@ -126,12 +133,83 @@ static void EZ430_RF2500T_LowLevel_Init(void)
 }
 
 /**
+  * @brief  Writes one byte to the EZ430_RF2500T.
+  * @param  pBuffer : pointer to the buffer  containing the data to be written to the EZ430_RF2500T.
+  * @param  WriteAddr : EZ430_RF2500T's internal address to write to.
+  * @param  NumByteToWrite: Number of bytes to write.
+  * @retval None
+  */
+void EZ430_RF2500T_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite)
+{
+  /* Configure the MS bit: 
+       - When 0, the address will remain unchanged in multiple read/write commands.
+       - When 1, the address will be auto incremented in multiple read/write commands.
+  */
+  if(NumByteToWrite > 0x01)
+  {
+    WriteAddr |= (uint8_t)MULTIPLEBYTE_CMD;
+  }
+  /* Set chip select Low at the start of the transmission */
+  EZ430_RF2500T_CS_LOW();
+  
+  /* Send the Address of the indexed register */
+  EZ430_RF2500T_SendByte(WriteAddr);
+  /* Send the data that will be written into the device (MSB First) */
+  while(NumByteToWrite >= 0x01)
+  {
+    EZ430_RF2500T_SendByte(*pBuffer);
+    NumByteToWrite--;
+    pBuffer++;
+  }
+  
+  /* Set chip select High at the end of the transmission */ 
+  EZ430_RF2500T_CS_HIGH();
+}
+
+/**
+  * @brief  Reads a block of data from the EZ430_RF2500T.
+  * @param  pBuffer : pointer to the buffer that receives the data read from the EZ430_RF2500T.
+  * @param  ReadAddr : EZ430_RF2500T's internal address to read from.
+  * @param  NumByteToRead : number of bytes to read from the EZ430_RF2500T.
+  * @retval None
+  */
+void EZ430_RF2500T_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead)
+{  
+  if(NumByteToRead > 0x01)
+  {
+    ReadAddr |= (uint8_t)(READWRITE_CMD | MULTIPLEBYTE_CMD);
+  }
+  else
+  {
+    ReadAddr |= (uint8_t)READWRITE_CMD;
+  }
+  /* Set chip select Low at the start of the transmission */
+  EZ430_RF2500T_CS_LOW();
+  
+  /* Send the Address of the indexed register */
+  EZ430_RF2500T_SendByte(ReadAddr);
+  
+  /* Receive the data that will be read from the device (MSB First) */
+  while(NumByteToRead > 0x00)
+  {
+    /* Send dummy byte (0x00) to generate the SPI clock to LIS3DSH (Slave device) */
+    *pBuffer = EZ430_RF2500T_SendByte(DUMMY_BYTE);
+    NumByteToRead--;
+    pBuffer++;
+  }
+  
+  /* Set chip select High at the end of the transmission */ 
+  EZ430_RF2500T_CS_HIGH();
+}
+
+
+/**
   * @brief  Sends a Byte through the SPI interface and return the Byte received 
   *         from the SPI bus.
   * @param  Byte : Byte send.
   * @retval The received byte value
   */
-static uint8_t LIS302DL_SendByte(uint8_t byte)
+static uint8_t EZ430_RF2500T_SendByte(uint8_t byte)
 {
   /* Loop while DR register in not emplty */
   EZ430_RF2500T_Timeout = EZ430_RF2500T_FLAG_TIMEOUT;
@@ -152,7 +230,6 @@ static uint8_t LIS302DL_SendByte(uint8_t byte)
   
   /* Return the Byte read from the SPI bus */
   return (uint8_t)SPI_I2S_ReceiveData(EZ430_RF2500T_SPI);
-	return 0;
 }
 
 #ifdef USE_DEFAULT_TIMEOUT_CALLBACK
