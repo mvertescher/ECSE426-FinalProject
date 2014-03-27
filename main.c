@@ -3,6 +3,8 @@
 #include "stm32f4xx.h"
 #include "cmsis_os.h"
 
+#include "ez430_rf2500t.h"
+
 /*!
  @brief Thread to perform menial tasks such as switching LEDs
  @param argument Unused
@@ -32,6 +34,18 @@ int main (void) {
 	// Start thread
 	tid_thread1 = osThreadCreate(osThread(thread), NULL);
 
+	
+	EZ430_RF2500T_InitTypeDef EZ430_RF2500T_InitStruct;
+	EZ430_RF2500T_Init(&EZ430_RF2500T_InitStruct);
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// The below doesn't really need to be in a loop
 	while(1){
 		osDelay(osWaitForever);

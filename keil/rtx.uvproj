@@ -357,7 +357,7 @@
               <MiscControls>--c99</MiscControls>
               <Define>__FPU_PRESENT=1 STM32F4XX USE_STDPERIPH_DRIVER=1 HSE_VALUE=8000000 ARM_MATH_CM4=1</Define>
               <Undefine></Undefine>
-              <IncludePath>../;../rtx_cmsis;../inc;../CMSIS/Device/ST/STM32F4xx/Include;../STM32F4xx_StdPeriph_Driver/inc</IncludePath>
+              <IncludePath>../;../rtx_cmsis;../inc;../CMSIS/Device/ST/STM32F4xx/Include;../STM32F4xx_StdPeriph_Driver/inc;..\src\EZ430-RF2500T</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2417,6 +2417,21 @@
               <FileName>arm_rfft_q31.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\CMSIS\DSP_Lib\Source\TransformFunctions\arm_rfft_q31.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>EZ430-RF2500T</GroupName>
+          <Files>
+            <File>
+              <FileName>ez430_rf2500t.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\EZ430-RF2500T\ez430_rf2500t.c</FilePath>
+            </File>
+            <File>
+              <FileName>ez430_rf2500t.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\EZ430-RF2500T\ez430_rf2500t.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -3,7 +3,7 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-C:\Users\Matt\Desktop\final_project\keil\rtx.uvproj
+C:\Users\Matt\Documents\GitHub\ECSE426-FinalProject\keil\rtx.uvproj
 Project File Date:  03/27/2014
 
 <h2>Output:</h2>
@@ -12,7 +12,7 @@ compiling system_stm32f4xx.c...
 assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
-../main.c(20): warning:  #550-D: variable "tid_thread1" was set but never used
+../main.c(22): warning:  #550-D: variable "tid_thread1" was set but never used
         osThreadId tid_thread1;
 ../main.c: 1 warning, 0 errors
 compiling misc.c...
@@ -46,14 +46,28 @@ compiling stm32f4xx_syscfg.c...
 compiling stm32f4xx_tim.c...
 compiling stm32f4xx_usart.c...
 compiling stm32f4xx_wwdg.c...
+compiling ez430_rf2500t.c...
+..\src\EZ430-RF2500T\ez430_rf2500t.c(36): warning:  #177-D: variable "ctrl" was declared but never referenced
+        uint8_t ctrl = 0x00;
+..\src\EZ430-RF2500T\ez430_rf2500t.c(155): warning:  #111-D: statement is unreachable
+        return 0;
+..\src\EZ430-RF2500T\ez430_rf2500t.c(22): warning:  #177-D: function "EZ430_RF2500T_SendByte" was declared but never referenced
+  static uint8_t EZ430_RF2500T_SendByte(uint8_t byte);
+..\src\EZ430-RF2500T\ez430_rf2500t.c(134): warning:  #177-D: function "LIS302DL_SendByte" was declared but never referenced
+  static uint8_t LIS302DL_SendByte(uint8_t byte)
+..\src\EZ430-RF2500T\ez430_rf2500t.c: 4 warnings, 0 errors
 linking...
-Program Size: Code=7184 RO-data=528 RW-data=80 ZI-data=8112  
+Program Size: Code=8580 RO-data=528 RW-data=84 ZI-data=8116  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 1 Warning(s).
-Load "C:\\Users\\Matt\\Desktop\\final_project\\keil\\obj\\output.axf" 
-Erase Done.
-Programming Done.
-Verify OK.
-</pre>
-</body>
-</html>
+".\obj\output.axf" - 0 Error(s), 5 Warning(s).
+d at line 140)
+  uint32_t EZ430_RF2500T_TIMEOUT_UserCallback(void)
+..\src\EZ430-RF2500T\ez430_rf2500t.c(22): warning:  #177-D: function "EZ430_RF2500T_SendByte" was declared but never referenced
+  static uint8_t EZ430_RF2500T_SendByte(uint8_t byte);
+..\src\EZ430-RF2500T\ez430_rf2500t.c(134): warning:  #177-D: function "LIS302DL_SendByte" was declared but never referenced
+  static uint8_t LIS302DL_SendByte(uint8_t byte)
+..\src\EZ430-RF2500T\ez430_rf2500t.c: 6 warnings, 1 error
+".\obj\output.axf" - 1 Error(s), 7 Warning(s).
+Target not created
+).
+Target not created
