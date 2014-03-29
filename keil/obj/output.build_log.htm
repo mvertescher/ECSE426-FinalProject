@@ -7,12 +7,11 @@ C:\Users\Matt\Documents\GitHub\ECSE426-FinalProject\keil\rtx.uvproj
 Project File Date:  03/27/2014
 
 <h2>Output:</h2>
-Rebuild target 'Project'
+Build target 'Project'
 compiling system_stm32f4xx.c...
-assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
-../main.c(23): warning:  #550-D: variable "tid_thread1" was set but never used
+../main.c(24): warning:  #550-D: variable "tid_thread1" was set but never used
         osThreadId tid_thread1;
 ../main.c: 1 warning, 0 errors
 compiling fputc_debug.c...
@@ -48,37 +47,16 @@ compiling stm32f4xx_tim.c...
 compiling stm32f4xx_usart.c...
 compiling stm32f4xx_wwdg.c...
 compiling ez430_rf2500t.c...
-..\src\EZ430-RF2500T\ez430_rf2500t.c(43): warning:  #177-D: variable "ctrl" was declared but never referenced
-        uint8_t ctrl = 0x00;
+..\src\EZ430-RF2500T\ez430_rf2500t.c(200): warning:  #9-D: nested comment is not allowed
+    /* Receive the data that will be read from the device (MSB First) */
 ..\src\EZ430-RF2500T\ez430_rf2500t.c: 1 warning, 0 errors
-linking...
-Program Size: Code=8888 RO-data=528 RW-data=92 ZI-data=8116  
-FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 2 Warning(s).
-Load "C:\\Users\\Matt\\Documents\\GitHub\\ECSE426-FinalProject\\keil\\obj\\output.axf" 
-Erase Done.
-Programming Done.
-Verify OK.
-</pre>
-</body>
-</html>
-r(s), 4 Warning(s).
-Load "C:\\Users\\Matt\\Documents\\GitHub\\ECSE426-FinalProject\\keil\\obj\\output.axf" 
-Erase Done.
-Programming Done.
-Verify OK.
-(43): warning:  #177-D: variable "ctrl" was declared but never referenced
-        uint8_t ctrl = 0x00;
-..\src\EZ430-RF2500T\ez430_rf2500t.c(233): warning:  #111-D: statement is unreachable
-        return 0;
-..\src\EZ430-RF2500T\ez430_rf2500t.c: 2 warnings, 0 errors
-".\obj\output.axf" - 3 Error(s), 6 Warning(s).
-Target not created
-t EZ430_RF2500T_SendByte(uint8_t byte);
-..\src\EZ430-RF2500T\ez430_rf2500t.c(134): warning:  #177-D: function "LIS302DL_SendByte" was declared but never referenced
-  static uint8_t LIS302DL_SendByte(uint8_t byte)
-..\src\EZ430-RF2500T\ez430_rf2500t.c: 6 warnings, 1 error
-".\obj\output.axf" - 1 Error(s), 7 Warning(s).
-Target not created
-).
+compiling cc2500.c...
+..\src\CC2500\cc2500.c(129): error:  #20: identifier "CC2500T_SPI_CS_PIN" is undefined
+    GPIO_SetBits(CC2500_SPI_CS_GPIO_PORT, CC2500T_SPI_CS_PIN);
+..\src\CC2500\cc2500.c(201): warning:  #9-D: nested comment is not allowed
+    /* Receive the data that will be read from the device (MSB First) */
+..\src\CC2500\cc2500.c(31): warning:  #177-D: function "CC2500_SmartRF_Config" was declared but never referenced
+  static void CC2500_SmartRF_Config(void);
+..\src\CC2500\cc2500.c: 2 warnings, 1 error
+".\obj\output.axf" - 1 Error(s), 4 Warning(s).
 Target not created

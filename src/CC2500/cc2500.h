@@ -1,17 +1,17 @@
 /**
   ******************************************************************************
-  * @file    ez430_rf2500t.h
+  * @file    cc2500.h
   * @author  Matthew Vertescher
   * @version V1.0.0
   * @date    27-March-2014
-  * @brief   This file contains all the functions prototypes for the ez430_rf2500t.c
+  * @brief   This file contains all the functions prototypes for the cc2500.c
   *          firmware driver.
   ******************************************************************************
   */ 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __EZ430_RF2500T_H
-#define __EZ430_RF2500T_H
+#ifndef __CC2500_H
+#define __CC2500_H
 
 #ifdef __cplusplus
  extern "C" {
@@ -23,51 +23,51 @@
 #include "stm32f4xx_rcc.h"
 #include "stm32f4xx_spi.h"
 
-/* EZ430_RF2500T  struct */
+/* CC2500  struct */
 typedef struct
 {
   uint8_t on;
-}EZ430_RF2500T_InitTypeDef;
+}CC2500_InitTypeDef;
 
 /* Maximum Timeout values for flags waiting loops. These timeouts are not based
    on accurate values, they just guarantee that the application will not remain
    stuck if the SPI communication is corrupted.
    You may modify these timeout values depending on CPU frequency and application
    conditions (interrupts routines ...). */   
-#define EZ430_RF2500T_FLAG_TIMEOUT         ((uint32_t)0xF000) //  ((uint32_t)0x1000)
+#define CC2500_FLAG_TIMEOUT         ((uint32_t)0xF000) //  ((uint32_t)0x1000)
 	 
 /**
-  * @brief  EZ430_RF2500T SPI Interface pins
+  * @brief  CC2500 SPI Interface pins
   */
 
-#define EZ430_RF2500T_SPI                       SPI2
-#define EZ430_RF2500T_SPI_CLK                   RCC_APB1Periph_SPI2
+#define CC2500_SPI                       SPI2
+#define CC2500_SPI_CLK                   RCC_APB1Periph_SPI2
 
 /* EZ430_RF2500T PIN 16 */
-#define EZ430_RF2500T_SPI_SCK_PIN               GPIO_Pin_13                 /* PB.13 */
-#define EZ430_RF2500T_SPI_SCK_GPIO_PORT         GPIOB                       /* GPIOB */
-#define EZ430_RF2500T_SPI_SCK_GPIO_CLK          RCC_AHB1Periph_GPIOB
-#define EZ430_RF2500T_SPI_SCK_SOURCE            GPIO_PinSource13
-#define EZ430_RF2500T_SPI_SCK_AF                GPIO_AF_SPI2
+#define CC2500_SPI_SCK_PIN               GPIO_Pin_13                 /* PB.13 */
+#define CC2500_SPI_SCK_GPIO_PORT         GPIOB                       /* GPIOB */
+#define CC2500_SPI_SCK_GPIO_CLK          RCC_AHB1Periph_GPIOB
+#define CC2500_SPI_SCK_SOURCE            GPIO_PinSource13
+#define CC2500_SPI_SCK_AF                GPIO_AF_SPI2
 
 /* EZ430_RF2500T PIN 15 */
-#define EZ430_RF2500T_SPI_MISO_PIN              GPIO_Pin_14                 /* PB.14 */
-#define EZ430_RF2500T_SPI_MISO_GPIO_PORT        GPIOB                       /* GPIOB */
-#define EZ430_RF2500T_SPI_MISO_GPIO_CLK         RCC_AHB1Periph_GPIOB
-#define EZ430_RF2500T_SPI_MISO_SOURCE           GPIO_PinSource14
-#define EZ430_RF2500T_SPI_MISO_AF               GPIO_AF_SPI2
+#define CC2500_SPI_MISO_PIN              GPIO_Pin_14                 /* PB.14 */
+#define CC2500_SPI_MISO_GPIO_PORT        GPIOB                       /* GPIOB */
+#define CC2500_SPI_MISO_GPIO_CLK         RCC_AHB1Periph_GPIOB
+#define CC2500_SPI_MISO_SOURCE           GPIO_PinSource14
+#define CC2500_SPI_MISO_AF               GPIO_AF_SPI2
 
 /* EZ430_RF2500T PIN 18 */
-#define EZ430_RF2500T_SPI_MOSI_PIN              GPIO_Pin_15                  /* PA.15 */
-#define EZ430_RF2500T_SPI_MOSI_GPIO_PORT        GPIOB                       /* GPIOB */
-#define EZ430_RF2500T_SPI_MOSI_GPIO_CLK         RCC_AHB1Periph_GPIOB
-#define EZ430_RF2500T_SPI_MOSI_SOURCE           GPIO_PinSource15
-#define EZ430_RF2500T_SPI_MOSI_AF               GPIO_AF_SPI2
+#define CC2500_SPI_MOSI_PIN              GPIO_Pin_15                  /* PA.15 */
+#define CC2500_SPI_MOSI_GPIO_PORT        GPIOB                       /* GPIOB */
+#define CC2500_SPI_MOSI_GPIO_CLK         RCC_AHB1Periph_GPIOB
+#define CC2500_SPI_MOSI_SOURCE           GPIO_PinSource15
+#define CC2500_SPI_MOSI_AF               GPIO_AF_SPI2
 
 /* EZ430_RF2500T PIN 17 */
-#define EZ430_RF2500T_SPI_CS_PIN                GPIO_Pin_3                  /* PE.03 */
-#define EZ430_RF2500T_SPI_CS_GPIO_PORT          GPIOE                       /* GPIOE */
-#define EZ430_RF2500T_SPI_CS_GPIO_CLK           RCC_AHB1Periph_GPIOE
+#define CC2500_SPI_CS_PIN                GPIO_Pin_3                  /* PE.03 */
+#define CC2500_SPI_CS_GPIO_PORT          GPIOE                       /* GPIOE */
+#define CC2500_SPI_CS_GPIO_CLK           RCC_AHB1Periph_GPIOE
 
 
 
@@ -167,18 +167,18 @@ typedef struct
 
 
 
-/** @defgroup EZ430_RF2500T_Exported_Macros
+/** @defgroup CC2500_Exported_Macros
   * @{
   */
-#define EZ430_RF2500T_CS_LOW()       GPIO_ResetBits(EZ430_RF2500T_SPI_CS_GPIO_PORT, EZ430_RF2500T_SPI_CS_PIN)
-#define EZ430_RF2500T_CS_HIGH()      GPIO_SetBits(EZ430_RF2500T_SPI_CS_GPIO_PORT, EZ430_RF2500T_SPI_CS_PIN)
+#define CC2500_CS_LOW()       GPIO_ResetBits(CC2500_SPI_CS_GPIO_PORT, CC2500_SPI_CS_PIN)
+#define CC2500_CS_HIGH()      GPIO_SetBits(CC2500_SPI_CS_GPIO_PORT, CC2500_SPI_CS_PIN)
 /**
   * @}
   */ 
 
 
 
-void EZ430_RF2500T_Init(EZ430_RF2500T_InitTypeDef *EZ430_RF2500T_InitStruct);
+void CC2500_Init(CC2500_InitTypeDef *CC2500_InitStruct);
 //void LIS302DL_InterruptConfig(LIS302DL_InterruptConfigTypeDef *LIS302DL_InterruptConfigStruct);
 //void LIS302DL_FilterConfig(LIS302DL_FilterConfigTypeDef *LIS302DL_FilterConfigStruct);
 //void LIS302DL_LowpowerCmd(uint8_t LowPowerMode);
@@ -186,11 +186,12 @@ void EZ430_RF2500T_Init(EZ430_RF2500T_InitTypeDef *EZ430_RF2500T_InitStruct);
 //void LIS302DL_DataRateCmd(uint8_t DataRateValue);
 //void LIS302DL_RebootCmd(void);
 //void LIS302DL_ReadACC(int32_t* out);
-void EZ430_RF2500T_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite);
-void EZ430_RF2500T_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead);
+void CC2500_CommandProbe(uint8_t* status, uint8_t CmdPrb); 
+void CC2500_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite);
+void CC2500_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead);
 
 
-uint32_t EZ430_RF2500T_TIMEOUT_UserCallback(void);
+uint32_t CC2500_TIMEOUT_UserCallback(void);
 
 #ifdef __cplusplus
 }

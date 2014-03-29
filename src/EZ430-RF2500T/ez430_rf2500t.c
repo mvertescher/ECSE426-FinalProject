@@ -40,7 +40,7 @@ static void EZ430_RF2500T_LowLevel_Init(void);
   */
 void EZ430_RF2500T_Init(EZ430_RF2500T_InitTypeDef *EZ430_RF2500T_InitStruct)
 {
-	uint8_t ctrl = 0x00;
+	//uint8_t ctrl = 0x00;
   
   /* Configure the low level interface ---------------------------------------*/
   EZ430_RF2500T_LowLevel_Init();
@@ -57,7 +57,7 @@ static void EZ430_RF2500T_LowLevel_Init(void)
   SPI_InitTypeDef  SPI_InitStructure;
 
   /* Enable the SPI periph */
-  RCC_APB2PeriphClockCmd(EZ430_RF2500T_SPI_CLK, ENABLE);
+  RCC_APB1PeriphClockCmd(EZ430_RF2500T_SPI_CLK, ENABLE); // WATCH FOR APB1/2
 
   /* Enable SCK, MOSI and MISO GPIO clocks */
   RCC_AHB1PeriphClockCmd(EZ430_RF2500T_SPI_SCK_GPIO_CLK | 
@@ -77,10 +77,15 @@ static void EZ430_RF2500T_LowLevel_Init(void)
 									 EZ430_RF2500T_SPI_MOSI_SOURCE,
 									 EZ430_RF2500T_SPI_MOSI_AF);
 
+  //GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+ // GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  //GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN; // Not input, don't pull GPIO_PuPd_DOWN;
+  //GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz; // 100hz?
+	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN; // Check pull NOPULL
+
 
   /* SPI SCK pin configuration */
   GPIO_InitStructure.GPIO_Pin = EZ430_RF2500T_SPI_SCK_PIN;
@@ -99,9 +104,10 @@ static void EZ430_RF2500T_LowLevel_Init(void)
   SPI_InitStructure.SPI_Direction = SPI_Direction_2Lines_FullDuplex;
   SPI_InitStructure.SPI_DataSize = SPI_DataSize_8b;
   SPI_InitStructure.SPI_CPOL = SPI_CPOL_Low;
-  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge;
-  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
-  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4;
+  SPI_InitStructure.SPI_CPHA = SPI_CPHA_1Edge; // Data is valid on clock leading edge
+  //SPI_InitStructure.SPI_NSS = SPI_NSS_Soft;
+  SPI_InitStructure.SPI_NSS = SPI_NSS_Soft | SPI_NSSInternalSoft_Set; // set the NSS management to internal and pull internal NSS high
+  SPI_InitStructure.SPI_BaudRatePrescaler = SPI_BaudRatePrescaler_4; // SPI frequency is APB1 frequency / 4
   SPI_InitStructure.SPI_FirstBit = SPI_FirstBit_MSB;
   SPI_InitStructure.SPI_CRCPolynomial = 7;
   SPI_InitStructure.SPI_Mode = SPI_Mode_Master;
@@ -115,6 +121,7 @@ static void EZ430_RF2500T_LowLevel_Init(void)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP; // added 
   GPIO_Init(EZ430_RF2500T_SPI_CS_GPIO_PORT, &GPIO_InitStructure);
 
   /* Deselect : Chip Select high */
@@ -188,12 +195,14 @@ void EZ430_RF2500T_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRe
   
   /* Send the Address of the indexed register */
   EZ430_RF2500T_SendByte(ReadAddr);
+  /*pBuffer = EZ430_RF2500T_SendByte(ReadAddr);
   
   /* Receive the data that will be read from the device (MSB First) */
   while(NumByteToRead > 0x00)
   {
     /* Send dummy byte (0x00) to generate the SPI clock to LIS3DSH (Slave device) */
     *pBuffer = EZ430_RF2500T_SendByte(DUMMY_BYTE);
+    //EZ430_RF2500T_SendByte(DUMMY_BYTE);
     NumByteToRead--;
     pBuffer++;
   }
@@ -211,7 +220,7 @@ void EZ430_RF2500T_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRe
   */
 static uint8_t EZ430_RF2500T_SendByte(uint8_t byte)
 {
-  /* Loop while DR register in not emplty */
+  /* Loop while DR register in not empty */
   EZ430_RF2500T_Timeout = EZ430_RF2500T_FLAG_TIMEOUT;
   while (SPI_I2S_GetFlagStatus(EZ430_RF2500T_SPI, SPI_I2S_FLAG_TXE) == RESET)
   {
