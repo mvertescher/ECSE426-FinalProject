@@ -35,3 +35,4 @@
 .\obj\cc2500.o: ../STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h
 .\obj\cc2500.o: ../STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_wwdg.h
 .\obj\cc2500.o: ../STM32F4xx_StdPeriph_Driver/inc/misc.h
+.\obj\cc2500.o: ..\src\CC2500\smartrf_cc2500.h

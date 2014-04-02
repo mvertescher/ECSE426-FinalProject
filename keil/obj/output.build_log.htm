@@ -4,11 +4,12 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 C:\Users\Matt\Documents\GitHub\ECSE426-FinalProject\keil\rtx.uvproj
-Project File Date:  03/27/2014
+Project File Date:  03/29/2014
 
 <h2>Output:</h2>
-Build target 'Project'
+Rebuild target 'Project'
 compiling system_stm32f4xx.c...
+assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
 ../main.c(24): warning:  #550-D: variable "tid_thread1" was set but never used
@@ -51,12 +52,18 @@ compiling ez430_rf2500t.c...
     /* Receive the data that will be read from the device (MSB First) */
 ..\src\EZ430-RF2500T\ez430_rf2500t.c: 1 warning, 0 errors
 compiling cc2500.c...
-..\src\CC2500\cc2500.c(129): error:  #20: identifier "CC2500T_SPI_CS_PIN" is undefined
-    GPIO_SetBits(CC2500_SPI_CS_GPIO_PORT, CC2500T_SPI_CS_PIN);
-..\src\CC2500\cc2500.c(201): warning:  #9-D: nested comment is not allowed
+..\src\CC2500\cc2500.c(321): warning:  #9-D: nested comment is not allowed
     /* Receive the data that will be read from the device (MSB First) */
-..\src\CC2500\cc2500.c(31): warning:  #177-D: function "CC2500_SmartRF_Config" was declared but never referenced
-  static void CC2500_SmartRF_Config(void);
-..\src\CC2500\cc2500.c: 2 warnings, 1 error
-".\obj\output.axf" - 1 Error(s), 4 Warning(s).
+..\src\CC2500\cc2500.c: 1 warning, 0 errors
+linking...
+Program Size: Code=9856 RO-data=528 RW-data=92 ZI-data=8116  
+FromELF: creating hex file...
+".\obj\output.axf" - 0 Error(s), 3 Warning(s).
+</pre>
+</body>
+</html>
+de=9856 RO-data=528 RW-data=92 ZI-data=8116  
+FromELF: creating hex file...
+".\obj\output.axf" - 0 Error(s), 4 Warning(s).
+4 Warning(s).
 Target not created

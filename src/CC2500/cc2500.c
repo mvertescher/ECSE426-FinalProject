@@ -154,111 +154,121 @@ void CC2500_SmartRF_Config(void)
 	uint8_t ctrl; 
 	
   ctrl = SMARTRF_SETTING_FSCTRL1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FSCTRL1, 1);
+  CC2500_Write(&ctrl, CC2500_FSCTRL1, 1);
   
   ctrl = SMARTRF_SETTING_FSCTRL0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FSCTRL0, 1);
+  CC2500_Write(&ctrl, CC2500_FSCTRL0, 1);
   
   ctrl = SMARTRF_SETTING_FREQ2;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FREQ2, 1);
+  CC2500_Write(&ctrl, CC2500_FREQ2, 1);
   
   ctrl = SMARTRF_SETTING_FREQ1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FREQ1, 1);
+  CC2500_Write(&ctrl, CC2500_FREQ1, 1);
   
   ctrl = SMARTRF_SETTING_FREQ0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FREQ0, 1);
+  CC2500_Write(&ctrl, CC2500_FREQ0, 1);
   
   ctrl = SMARTRF_SETTING_MDMCFG4;
-  EZ430_RF2500T_Write(&ctrl, CC2500_MDMCFG4, 1);
+  CC2500_Write(&ctrl, CC2500_MDMCFG4, 1);
   
   ctrl = SMARTRF_SETTING_MDMCFG3;
-  EZ430_RF2500T_Write(&ctrl, CC2500_MDMCFG3, 1);
+  CC2500_Write(&ctrl, CC2500_MDMCFG3, 1);
     
   ctrl = SMARTRF_SETTING_MDMCFG2;
-  EZ430_RF2500T_Write(&ctrl, CC2500_MDMCFG2, 1);
+  CC2500_Write(&ctrl, CC2500_MDMCFG2, 1);
   
   ctrl = SMARTRF_SETTING_MDMCFG1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_MDMCFG1, 1);
+  CC2500_Write(&ctrl, CC2500_MDMCFG1, 1);
   
   ctrl = SMARTRF_SETTING_MDMCFG0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_MDMCFG0, 1);
+  CC2500_Write(&ctrl, CC2500_MDMCFG0, 1);
   
   ctrl = SMARTRF_SETTING_CHANNR;
-  EZ430_RF2500T_Write(&ctrl, CC2500_CHANNR, 1);
+  CC2500_Write(&ctrl, CC2500_CHANNR, 1);
   
   ctrl = SMARTRF_SETTING_DEVIATN;
-  EZ430_RF2500T_Write(&ctrl, CC2500_DEVIATN, 1);
+  CC2500_Write(&ctrl, CC2500_DEVIATN, 1);
   
   ctrl = SMARTRF_SETTING_FREND1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FREND1, 1);
+  CC2500_Write(&ctrl, CC2500_FREND1, 1);
   
   ctrl = SMARTRF_SETTING_FREND0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FREND0, 1);
+  CC2500_Write(&ctrl, CC2500_FREND0, 1);
    
   ctrl = SMARTRF_SETTING_MCSM0; 
-  EZ430_RF2500T_Write(&ctrl, CC2500_MCSM0, 1);  
+  CC2500_Write(&ctrl, CC2500_MCSM0, 1);  
   
   ctrl = SMARTRF_SETTING_FOCCFG; 
-  EZ430_RF2500T_Write(&ctrl, CC2500_FOCCFG, 1);
+  CC2500_Write(&ctrl, CC2500_FOCCFG, 1);
   
   ctrl = SMARTRF_SETTING_BSCFG;
-  EZ430_RF2500T_Write(&ctrl, CC2500_BSCFG, 1);
+  CC2500_Write(&ctrl, CC2500_BSCFG, 1);
   
   ctrl = SMARTRF_SETTING_AGCCTRL2;
-  EZ430_RF2500T_Write(&ctrl, CC2500_AGCCTRL2, 1);
+  CC2500_Write(&ctrl, CC2500_AGCCTRL2, 1);
   
   ctrl = SMARTRF_SETTING_AGCCTRL1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_AGCCTRL1, 1);
+  CC2500_Write(&ctrl, CC2500_AGCCTRL1, 1);
   
   ctrl = SMARTRF_SETTING_AGCCTRL0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_AGCCTRL0, 1);
+  CC2500_Write(&ctrl, CC2500_AGCCTRL0, 1);
   
   ctrl = SMARTRF_SETTING_FSCAL3;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FSCAL3, 1);
+  CC2500_Write(&ctrl, CC2500_FSCAL3, 1);
   
   ctrl = SMARTRF_SETTING_FSCAL2;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FSCAL2, 1);
+  CC2500_Write(&ctrl, CC2500_FSCAL2, 1);
   
   ctrl = SMARTRF_SETTING_FSCAL1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FSCAL1, 1);
+  CC2500_Write(&ctrl, CC2500_FSCAL1, 1);
   
   ctrl = SMARTRF_SETTING_FSCAL0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FSCAL0, 1);
+  CC2500_Write(&ctrl, CC2500_FSCAL0, 1);
   
   ctrl = SMARTRF_SETTING_FSTEST;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FSTEST, 1);
+  CC2500_Write(&ctrl, CC2500_FSTEST, 1);
   
   ctrl = SMARTRF_SETTING_TEST2;
-  EZ430_RF2500T_Write(&ctrl, CC2500_TEST2, 1);
+  CC2500_Write(&ctrl, CC2500_TEST2, 1);
   
   ctrl = SMARTRF_SETTING_TEST1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_TEST1, 1);
+  CC2500_Write(&ctrl, CC2500_TEST1, 1);
   
   ctrl = SMARTRF_SETTING_TEST0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_TEST0, 1);
+  CC2500_Write(&ctrl, CC2500_TEST0, 1);
   
   ctrl = SMARTRF_SETTING_FIFOTHR;
-  EZ430_RF2500T_Write(&ctrl, CC2500_FIFOTHR, 1);
+  CC2500_Write(&ctrl, CC2500_FIFOTHR, 1);
   
   ctrl = SMARTRF_SETTING_IOCFG2;
-  EZ430_RF2500T_Write(&ctrl, CC2500_IOCFG2, 1);
+  CC2500_Write(&ctrl, CC2500_IOCFG2, 1);
   
   ctrl = SMARTRF_SETTING_IOCFG0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_IOCFG0, 1);
+  CC2500_Write(&ctrl, CC2500_IOCFG0, 1);
   
   ctrl = SMARTRF_SETTING_PKTCTRL1;
-  EZ430_RF2500T_Write(&ctrl, CC2500_PKTCTRL1, 1);
+  CC2500_Write(&ctrl, CC2500_PKTCTRL1, 1);
   
   ctrl = SMARTRF_SETTING_PKTCTRL0;
-  EZ430_RF2500T_Write(&ctrl, CC2500_PKTCTRL0, 1);
+  CC2500_Write(&ctrl, CC2500_PKTCTRL0, 1);
   
   ctrl = SMARTRF_SETTING_ADDR;
-  EZ430_RF2500T_Write(&ctrl, CC2500_ADDR, 1);
+  CC2500_Write(&ctrl, CC2500_ADDR, 1);
   
   ctrl = SMARTRF_SETTING_PKTLEN;
-  EZ430_RF2500T_Write(&ctrl, CC2500_PKTLEN, 1);
+  CC2500_Write(&ctrl, CC2500_PKTLEN, 1);
 }
 
+/**
+  * @brief  Writes one byte to the CC2500.
+  * @param  pStatus : pointer to a variable to be filled with the CC2500 status
+  * @param  CmdPrbAddr : address to a command probe register
+  * @retval None
+  */
+void CC2500_CommandProbe(uint8_t* pStatus, uint8_t CmdPrbAddr)
+{
+	// May need to change read/write bit 
+}
 
 /**
   * @brief  Writes one byte to the CC2500.
@@ -267,7 +277,7 @@ void CC2500_SmartRF_Config(void)
   * @param  NumByteToWrite: Number of bytes to write.
   * @retval None
   */
-void EZ430_RF2500T_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite)
+void CC2500_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite)
 {
   /* Configure the MS bit: 
        - When 0, the address will remain unchanged in multiple read/write commands.

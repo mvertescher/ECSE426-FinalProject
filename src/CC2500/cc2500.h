@@ -158,12 +158,12 @@ typedef struct
 
 
 /* FIFO Buffer Access Headers */ // not needed addr = 0x3F
-#define CC2500_TX_SINGLE  0x3F
-#define CC2500_TX_BURST   0x7F
-#define CC2500_RX_SINGLE  0xBF
-#define CC2500_RX_BURST   0xFF
+#define CC2500_TX_SINGLE  0x3F // transmit 1
+#define CC2500_TX_BURST   0x7F // transmit many
+#define CC2500_RX_SINGLE  0xBF // recieve 1
+#define CC2500_RX_BURST   0xFF // recieve many 
 
-#define CC2500_FIFOADDR   0x3F
+#define CC2500_FIFOADDR   0x3F // 
 
 
 
