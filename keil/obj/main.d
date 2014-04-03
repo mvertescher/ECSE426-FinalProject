@@ -41,5 +41,5 @@
 .\obj\main.o: ../inc/cmsis_os.h
 .\obj\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stddef.h
 .\obj\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
-.\obj\main.o: ..\src\EZ430-RF2500T\ez430_rf2500t.h
 .\obj\main.o: ..\src\CC2500\smartrf_cc2500.h
+.\obj\main.o: ..\src\CC2500\cc2500.h

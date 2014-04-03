@@ -116,14 +116,14 @@ typedef struct
 #define CC2500_ADDR       0x09
 #define CC2500_CHANNR     0x0A
 #define CC2500_FSCTRL1    0x0B 
-#define CC2500_FSCTRL0    0x0C 
+#define CC2500_FSCTRL0    0x0C    
 #define CC2500_FREQ2      0x0D 
 #define CC2500_FREQ1      0x0E 
 #define CC2500_FREQ0      0x0F 
 #define CC2500_MDMCFG4    0x10 
 #define CC2500_MDMCFG3    0x11 
 #define CC2500_MDMCFG2    0x12 
-#define CC2500_MDMCFG1    0x13 
+#define CC2500_MDMCFG1    0x13    
 #define CC2500_MDMCFG0    0x14
 #define CC2500_DEVIATN    0x15
 #define CC2500_MCSM2      0x16
@@ -147,14 +147,14 @@ typedef struct
 #define CC2500_RCCTRL0    0x28
 #define CC2500_FSTEST     0x29
 #define CC2500_PTEST      0x2A
-#define CC2500_AGCTEST    0x2B
-#define CC2500_TEST2      0x2C
-#define CC2500_TEST1      0x2D
-#define CC2500_TEST0      0x2E
+#define CC2500_AGCTEST    0x2B      /* R/W, 0x3F by default */ 
+#define CC2500_TEST2      0x2C      /* R/W, 0x88 by default */ 
+#define CC2500_TEST1      0x2D      /* R/W, 0x31 by default */ 
+#define CC2500_TEST0      0x2E      /* R/W, 0x0B by default 000010 11 = B */ 
 
 /* Status Registers */
-#define CC2500_PARTNUM    0xF0      /* Read only */
-#define CC2500_VERSION    0xF1      /* Read only */
+#define CC2500_PARTNUM    0xF0      /* Read only, 0x80 default */
+#define CC2500_VERSION    0xF1      /* Read only, 0x03 default */
 
 
 /* FIFO Buffer Access Headers */ // not needed addr = 0x3F
@@ -164,7 +164,27 @@ typedef struct
 #define CC2500_RX_BURST   0xFF // recieve many 
 
 #define CC2500_FIFOADDR   0x3F // 
+#define CC2500_TX_ADDR    0x3F //
+#define CC2500_RX_ADDR    0xBF //
 
+#define CC2500_WRITEBIT   0x01
+#define CC2500_READBIT    0x01
+
+/* States  */
+#define CC2500_CHIP_RDYn                0x80
+#define CC2500_STATE_IDLE               0x00
+#define CC2500_STATE_RX                 0x10
+#define CC2500_STATE_TX                 0x20
+#define CC2500_STATE_FSTXON             0x30
+#define CC2500_STATE_CALIBRATE          0x40
+#define CC2500_STATE_SETTLING           0x50
+#define CC2500_STATE_RXFIFO_OVERFLOW    0x60
+#define CC2500_STATE_TXFIFO_UNDERFLOW   0x70
+
+/* */ 
+#define CC2500_RXBYTES                  0xFB
+
+#define CC2500_PACKETLENGTH							SMARTRF_SETTING_PKTLEN
 
 
 /** @defgroup CC2500_Exported_Macros
@@ -179,14 +199,18 @@ typedef struct
 
 
 void CC2500_Init(CC2500_InitTypeDef *CC2500_InitStruct);
+void CC2500_SmartRF_Config(void);
 //void LIS302DL_InterruptConfig(LIS302DL_InterruptConfigTypeDef *LIS302DL_InterruptConfigStruct);
 //void LIS302DL_FilterConfig(LIS302DL_FilterConfigTypeDef *LIS302DL_FilterConfigStruct);
 //void LIS302DL_LowpowerCmd(uint8_t LowPowerMode);
 //void LIS302DL_FullScaleCmd(uint8_t FS_value);
 //void LIS302DL_DataRateCmd(uint8_t DataRateValue);
-//void LIS302DL_RebootCmd(void);
+void CC2500_RebootCmd(void);
 //void LIS302DL_ReadACC(int32_t* out);
-void CC2500_CommandProbe(uint8_t* status, uint8_t CmdPrb); 
+uint8_t CC2500_CommandProbe(uint8_t rw, uint8_t CmdPrbAddr);
+uint8_t CC2500_TransmitBytes(uint8_t* pBuffer, uint16_t NumByteToSend);
+uint8_t CC2500_RecieveBytes(uint8_t* pBuffer, uint16_t NumByteToRead);
+
 void CC2500_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite);
 void CC2500_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead);
 

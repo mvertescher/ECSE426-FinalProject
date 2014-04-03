@@ -4,7 +4,7 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 C:\Users\Matt\Documents\GitHub\ECSE426-FinalProject\keil\rtx.uvproj
-Project File Date:  03/29/2014
+Project File Date:  04/02/2014
 
 <h2>Output:</h2>
 Rebuild target 'Project'
@@ -12,10 +12,27 @@ compiling system_stm32f4xx.c...
 assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
-../main.c(24): warning:  #550-D: variable "tid_thread1" was set but never used
-        osThreadId tid_thread1;
-../main.c: 1 warning, 0 errors
+../main.c(159): warning:  #111-D: statement is unreachable
+      osDelay(osWaitForever);
+../main.c(26): warning:  #550-D: variable "tid_transmit" was set but never used
+        osThreadId tid_transmit;
+../main.c(27): warning:  #177-D: variable "tid_receive" was declared but never referenced
+      osThreadId tid_receive;
+../main.c(42): warning:  #177-D: variable "arr" was declared but never referenced
+      uint8_t arr[4];
+../main.c: 4 warnings, 0 errors
 compiling fputc_debug.c...
+compiling accelerometer.c...
+..\src\accelerometer.c(30): warning:  #68-D: integer conversion resulted in a change of sign
+        ctrl = OFFSET_X;
+..\src\accelerometer.c(32): warning:  #68-D: integer conversion resulted in a change of sign
+        ctrl = OFFSET_Y;
+..\src\accelerometer.c: 2 warnings, 0 errors
+compiling atan_LUT.c...
+compiling filter.c...
+..\src\filter.c(36): warning:  #1-D: last line of file ends without a newline
+  }
+..\src\filter.c: 1 warning, 0 errors
 compiling misc.c...
 compiling stm32f4xx_adc.c...
 compiling stm32f4xx_can.c...
@@ -47,23 +64,24 @@ compiling stm32f4xx_syscfg.c...
 compiling stm32f4xx_tim.c...
 compiling stm32f4xx_usart.c...
 compiling stm32f4xx_wwdg.c...
-compiling ez430_rf2500t.c...
-..\src\EZ430-RF2500T\ez430_rf2500t.c(200): warning:  #9-D: nested comment is not allowed
-    /* Receive the data that will be read from the device (MSB First) */
-..\src\EZ430-RF2500T\ez430_rf2500t.c: 1 warning, 0 errors
 compiling cc2500.c...
-..\src\CC2500\cc2500.c(321): warning:  #9-D: nested comment is not allowed
-    /* Receive the data that will be read from the device (MSB First) */
-..\src\CC2500\cc2500.c: 1 warning, 0 errors
+compiling lis3dsh.c...
+..\src\LIS3DSH\lis3dsh.c(316): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+..\src\LIS3DSH\lis3dsh.c(326): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(LIS3DSH_SENSITIVITY_4G * (float)aggregateResult);
+..\src\LIS3DSH\lis3dsh.c(336): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(LIS3DSH_SENSITIVITY_6G * (float)aggregateResult);
+..\src\LIS3DSH\lis3dsh.c(346): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(LIS3DSH_SENSITIVITY_8G * (float)aggregateResult);
+..\src\LIS3DSH\lis3dsh.c(356): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+          *out =(float)(LIS3DSH_SENSITIVITY_16G * (float)aggregateResult);
+..\src\LIS3DSH\lis3dsh.c: 5 warnings, 0 errors
+compiling gdm1602k.c...
 linking...
-Program Size: Code=9856 RO-data=528 RW-data=92 ZI-data=8116  
+Program Size: Code=13664 RO-data=512 RW-data=92 ZI-data=8116  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 3 Warning(s).
+".\obj\output.axf" - 0 Error(s), 12 Warning(s).
 </pre>
 </body>
 </html>
-de=9856 RO-data=528 RW-data=92 ZI-data=8116  
-FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 4 Warning(s).
-4 Warning(s).
-Target not created

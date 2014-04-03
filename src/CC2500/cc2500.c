@@ -5,7 +5,7 @@
   * @version V1.0.0
   * @date    27-March-2014
   * @brief   This file provides a set of functions needed to manage the 
-	*					 CC2500 wireless chip.
+  *			 CC2500 wireless chip.
   ******************************************************************************
   */
 
@@ -29,7 +29,7 @@ __IO uint32_t  CC2500_Timeout = CC2500_FLAG_TIMEOUT;
   */
 static uint8_t CC2500_SendByte(uint8_t byte);
 static void CC2500_LowLevel_Init(void);
-static void CC2500_SmartRF_Config(void);
+
 /**
   * @}
   */
@@ -44,11 +44,11 @@ void CC2500_Init(CC2500_InitTypeDef *CC2500_InitStruct)
 {
 	//uint8_t ctrl = 0x00;
   
-  /* Configure the low level interface ---------------------------------------*/
-  CC2500_LowLevel_Init();
+    /* Configure the low level interface ---------------------------------------*/
+    CC2500_LowLevel_Init();
 	
 	/* Configure the CC2500 ----------------------------------------------------*/
-	CC2500_SmartRF_Config();
+	//CC2500_SmartRF_Config();
 }
 
 /**
@@ -194,7 +194,10 @@ void CC2500_SmartRF_Config(void)
   
   ctrl = SMARTRF_SETTING_FREND0;
   CC2500_Write(&ctrl, CC2500_FREND0, 1);
-   
+  
+  ctrl = SMARTRF_SETTING_MCSM1; 
+  CC2500_Write(&ctrl, CC2500_MCSM1, 1);  
+
   ctrl = SMARTRF_SETTING_MCSM0; 
   CC2500_Write(&ctrl, CC2500_MCSM0, 1);  
   
@@ -259,16 +262,44 @@ void CC2500_SmartRF_Config(void)
   CC2500_Write(&ctrl, CC2500_PKTLEN, 1);
 }
 
-/**
-  * @brief  Writes one byte to the CC2500.
-  * @param  pStatus : pointer to a variable to be filled with the CC2500 status
-  * @param  CmdPrbAddr : address to a command probe register
-  * @retval None
-  */
-void CC2500_CommandProbe(uint8_t* pStatus, uint8_t CmdPrbAddr)
-{
-	// May need to change read/write bit 
+void CC2500_RebootCmd(void) {
+    CC2500_CommandProbe(CC2500_READBIT, CC2500_SRES);
 }
+
+uint8_t CC2500_CommandProbe(uint8_t rw, uint8_t CmdPrbAddr)
+{   
+    uint8_t status;
+    if (rw) {
+        CmdPrbAddr |= (uint8_t)READWRITE_CMD;
+    }
+	/* Set chip select Low at the start of the transmission */
+    CC2500_CS_LOW();
+  
+    /* Send the Address of the indexed register */
+    CC2500_SendByte(CmdPrbAddr);
+    
+    /* Read the status byte */
+    status = CC2500_SendByte(DUMMY_BYTE);
+    
+    /* Set chip select High at the end of the transmission */ 
+    CC2500_CS_HIGH();
+    
+    return status; 
+}
+
+
+uint8_t CC2500_TransmitBytes(uint8_t* pBuffer, uint16_t NumByteToSend) {
+		if (NumByteToSend != CC2500_PACKETLENGTH)
+			return 0xFF;
+		CC2500_Write(&pBuffer[0], CC2500_FIFOADDR, NumByteToSend); // Write to the TX buffer 
+    return CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_STX); // Return the status
+}
+
+uint8_t CC2500_RecieveBytes(uint8_t* pBuffer, uint16_t NumByteToRead) {
+		CC2500_Read(&pBuffer[0], CC2500_FIFOADDR, NumByteToRead); // Read from the RX buffer 
+    return CC2500_CommandProbe(CC2500_READBIT, CC2500_SRX); // Return the status
+}
+
 
 /**
   * @brief  Writes one byte to the CC2500.
@@ -292,6 +323,7 @@ void CC2500_Write(uint8_t* pBuffer, uint8_t WriteAddr, uint16_t NumByteToWrite)
   
   /* Send the Address of the indexed register */
   CC2500_SendByte(WriteAddr);
+  
   /* Send the data that will be written into the device (MSB First) */
   while(NumByteToWrite >= 0x01)
   {
@@ -326,7 +358,7 @@ void CC2500_Read(uint8_t* pBuffer, uint8_t ReadAddr, uint16_t NumByteToRead)
   
   /* Send the Address of the indexed register */
   CC2500_SendByte(ReadAddr);
-  /*pBuffer = EZ430_RF2500T_SendByte(ReadAddr);
+  /*pBuffer = EZ430_RF2500T_SendByte(ReadAddr); */
   
   /* Receive the data that will be read from the device (MSB First) */
   while(NumByteToRead > 0x00)

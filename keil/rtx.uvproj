@@ -357,7 +357,7 @@
               <MiscControls>--c99</MiscControls>
               <Define>__FPU_PRESENT=1 STM32F4XX USE_STDPERIPH_DRIVER=1 HSE_VALUE=8000000 ARM_MATH_CM4=1</Define>
               <Undefine></Undefine>
-              <IncludePath>../;../rtx_cmsis;../inc;../CMSIS/Device/ST/STM32F4xx/Include;../STM32F4xx_StdPeriph_Driver/inc;..\src\EZ430-RF2500T;..\src\CC2500</IncludePath>
+              <IncludePath>../;../rtx_cmsis;../inc;../CMSIS/Device/ST/STM32F4xx/Include;../STM32F4xx_StdPeriph_Driver/inc;..\src\CC2500;..\src\GDM1602K;..\src\LIS3DSH</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -442,6 +442,41 @@
               <FileName>fputc_debug.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\src\fputc_debug.c</FilePath>
+            </File>
+            <File>
+              <FileName>accelerometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\accelerometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>accelerometer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\accelerometer.h</FilePath>
+            </File>
+            <File>
+              <FileName>array.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\array.h</FilePath>
+            </File>
+            <File>
+              <FileName>atan_LUT.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\atan_LUT.c</FilePath>
+            </File>
+            <File>
+              <FileName>atan_LUT.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\atan_LUT.h</FilePath>
+            </File>
+            <File>
+              <FileName>filter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\filter.c</FilePath>
+            </File>
+            <File>
+              <FileName>filter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\filter.h</FilePath>
             </File>
           </Files>
         </Group>
@@ -2426,21 +2461,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>EZ430-RF2500T</GroupName>
-          <Files>
-            <File>
-              <FileName>ez430_rf2500t.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\src\EZ430-RF2500T\ez430_rf2500t.c</FilePath>
-            </File>
-            <File>
-              <FileName>ez430_rf2500t.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\src\EZ430-RF2500T\ez430_rf2500t.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>CC2500</GroupName>
           <Files>
             <File>
@@ -2457,6 +2477,36 @@
               <FileName>smartrf_cc2500.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\src\CC2500\smartrf_cc2500.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>LIS3DSH</GroupName>
+          <Files>
+            <File>
+              <FileName>lis3dsh.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\LIS3DSH\lis3dsh.c</FilePath>
+            </File>
+            <File>
+              <FileName>lis3dsh.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\LIS3DSH\lis3dsh.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>GDM1602K</GroupName>
+          <Files>
+            <File>
+              <FileName>gdm1602k.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\GDM1602K\gdm1602k.c</FilePath>
+            </File>
+            <File>
+              <FileName>gdm1602k.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\GDM1602K\gdm1602k.h</FilePath>
             </File>
           </Files>
         </Group>
