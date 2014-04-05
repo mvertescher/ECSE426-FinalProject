@@ -11,6 +11,6 @@ MISO (Master in Serial out)   PB14              Pin 15
 
 MOSI (Master out Serial in)   PB15              Pin 18
 
-CS  (Chip select)             PE03              Pin 17
+CS  (Chip select)             PE04              Pin 17
 
 Note that the SPI wires go by different names in different documentation files.

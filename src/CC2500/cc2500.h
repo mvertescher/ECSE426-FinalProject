@@ -65,7 +65,7 @@ typedef struct
 #define CC2500_SPI_MOSI_AF               GPIO_AF_SPI2
 
 /* EZ430_RF2500T PIN 17 */
-#define CC2500_SPI_CS_PIN                GPIO_Pin_3                  /* PE.03 */
+#define CC2500_SPI_CS_PIN                GPIO_Pin_4                  /* PE.04 */
 #define CC2500_SPI_CS_GPIO_PORT          GPIOE                       /* GPIOE */
 #define CC2500_SPI_CS_GPIO_CLK           RCC_AHB1Periph_GPIOE
 

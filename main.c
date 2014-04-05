@@ -6,6 +6,17 @@
 #include <stdio.h>
 #include "smartrf_cc2500.h"
 #include "cc2500.h"
+#include "wireless.h"
+
+#include "filter.h"
+#include "lis3dsh.h"
+#include "atan_LUT.h"
+#include "accelerometer.h"
+
+#define PITCH_FILTER_SIZE   16
+#define ROLL_FILTER_SIZE    16
+
+#define IS_TRANSMITTER      1
 
 /*!
  @brief Thread to perform menial tasks such as switching LEDs
@@ -13,245 +24,154 @@
  */
 void transmit_thread(void const * argument);
 void receive_thread(void const *argument);
+void accelerometer_thread(void const *argument);
 
 //! Thread structure for above thread
 osThreadDef(transmit_thread, osPriorityNormal, 1, 0);
 osThreadDef(receive_thread, osPriorityNormal, 1, 0);
+osThreadDef(accelerometer_thread, osPriorityNormal, 1, 0);
+
+
+void transmit_loop(void); 
+void receive_loop(void);
+
+float pitch = .5f;
+float roll= .5f;
 
 /*!
  @brief Program entry point
  */
 int main (void) {
-	// ID for thread
-	osThreadId tid_transmit;
-    osThreadId tid_receive;
-	
-    /*GPIO_InitTypeDef  GPIO_InitStructure;
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_12;
-	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
-	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
-	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
-	GPIO_Init(GPIOD, &GPIO_InitStructure); */
-
-	CC2500_InitTypeDef CC2500_InitStruct;
-	CC2500_Init(&CC2500_InitStruct);
-	
-    uint8_t bffr = 0x00; 
-    uint8_t arr[4];
-    
-    // Starting sequence
-    bffr = CC2500_CommandProbe(CC2500_READBIT, CC2500_SRES);
-    printf("Reseting = %x \n",bffr);
-    
-    bffr = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
-    printf("First status = %x \n",bffr);
-    
-    CC2500_SmartRF_Config();
-    
-    osDelay(1000);
-    
-    //CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_STX);
-    //printf("Moving to TX (%x) \n",bffr);
-    // Need to wait for CALIBRATE state to finish when moveing to RX
-    //osDelay(1000);
-    
-    int i; 
-    uint8_t pkt[10];
-    for (i = 0; i < 10; i++) pkt[i] = 1+i;
-    // Transmit loop 
-    while (0) {
-        // Reset
-        //CC2500_Read(&bffr, CC2500_SRES, 1);
-        //bffr = CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_SNOP);
-        bffr = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
-        printf("Status = %x \n",bffr);
-        osDelay(1000);
-        
-        //CC2500_CommandProbe(CC2500_READBIT, CC2500_FIFOADDR);
-        printf("Writing %x to the tx buffer \n",bffr);
-        CC2500_Write(&pkt[0], CC2500_FIFOADDR, 10); // Write to the TX buffer 
-        osDelay(500);
-        bffr = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
-        printf("Status = %x \n",bffr);
-        osDelay(500);
-        bffr = CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_STX);
-        printf("Moving to TX (%x) \n",bffr);
-        
-        
-        
-        
-        osDelay(8000);
-        
-        //while ((bffr & 0x70) != CC2500_STATE_TXFIFO_UNDERFLOW) // Wait to enter the underflow state
-        //    bffr = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
-        //printf("Done waiting for underflow (%x) \n",bffr);
-        
-        //bffr = CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_SIDLE);
-        //printf("Moving to idol (%x) \n",bffr);
-        
-        //printf("\n");
-        
-        
-        /*
-        CC2500_Read(&bffr, CC2500_SNOP, 1);
-        printf("Read status = %x \n",bffr);
-        osDelay(2000);*/
-        
-        /*  SINGLE READ works, cant read across multiple read only registers 
-        CC2500_Read(arr, CC2500_PARTNUM, 1);
-        CC2500_Read(&arr[1], CC2500_VERSION, 1);
-        printf("PARTNUM = %x  VERSION = %x \n",arr[0],arr[1]); */
-        
-        //CC2500_Read(arr, CC2500_TEST0, 4);
-        //printf("TEST0 = %x ADDR0x2F = %x PARTNUM = %x  VERSION = %x \n",arr[0],arr[1],arr[2],arr[3]);
-        
-        //CC2500_Read(arr, CC2500_AGCTEST, 4);
-        //printf("AGCTEST = %x TEST2 = %x TEST1 = %x TEST0 = %x \n",arr[0],arr[1],arr[2],arr[3]);
-        //osDelay(1000);
-        //CC2500_Read(arr, CC2500_PARTNUM, 2);
-        //printf("PARTNUM = %x  VERSION = %x \n",arr[0],arr[1]);
-        
-        //osDelay(2000);
-    }
-    
-    /* Receive loop */
-    /*
-        When RX is activated the chip WILL remain in RX mode until a packet is successfully 
-        received 
-    */
-    uint8_t status;
-    uint8_t bytesToRead;
-    status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SRX);
-    printf("Moving to RX (%x) \n",status);
-    uint8_t buffer[30];
-    //CC2500_RXBYTES
-    while(1) {
-        status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
-        printf("Status (%x) \n",status);
-        
-        if ((status & 0x70) == CC2500_STATE_IDLE) { // if in idle state
-            CC2500_Read(&bytesToRead, CC2500_RXBYTES,1);
-            bytesToRead = bytesToRead & 0x7F;
-            CC2500_Read(&buffer[0], CC2500_FIFOADDR, bytesToRead); 
-            bytesToRead -= 2;
-            int i;
-            for (i = 0; i < bytesToRead; i++)
-                printf("%x ",buffer[i]); 
-            
-            //printf("Read %i bytes \n",bytesToRead);
-            status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SRX);
-            printf("\n Read %i bytes and moving back to RX (%x) \n",bytesToRead,status);
-        }
-        osDelay(500);
-
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    osDelay(osWaitForever);
-    
-    
-	// Start thread
-	printf("Starting thread\n");
+  // ID for thread
+  osThreadId tid_transmit;
+  osThreadId tid_receive;
+  osThreadId tid_accelerometer;    
+ 
+  
+  // Start wireless 
+  uint8_t status;
+  status = init_wireless();
+  printf("CC2500 Ready (%x) \n",status);
+  osDelay(1000);
+  
+  
+  if (IS_TRANSMITTER) {    
+    init_accelerometer();
+    printf("Transmitter starting threads \n");
     tid_transmit = osThreadCreate(osThread(transmit_thread), NULL);
-    //tid_receive = osThreadCreate(osThread(receive_thread), NULL);
-
-
-	// The below doesn't really need to be in a loop
+    tid_accelerometer = osThreadCreate(osThread(accelerometer_thread), NULL);
+  }
+  
+  else {
+    printf("Receiver starting threads \n");
+    tid_receive = osThreadCreate(osThread(receive_thread), NULL);
+  }
+  
+	// The main thread does nothing
 	while(1){
 		osDelay(osWaitForever);
 	}
 }
 
-void transmit_thread(void const *argument) {
-  
-  uint8_t bffr = 0x00; 
-  printf("BffrSTX before: %x \n",bffr);
-  //CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_STX);
-  CC2500_Read(&bffr, CC2500_STX, 1); // Transmit mode
-  //CC2500_Read(&bffr, CC2500_SRX, 1); // Rec mode
-  printf("BffrSTX after: %x %i \n\n",bffr,bffr);
-    
-  uint8_t send[5];
-  send[0] = 1;
-  send[1] = 2;
-  send[2] = 4;
-  send[3] = 6;
-  send[4] = 8;
-    
-  uint8_t fifo_bytes_available  = 0;
-  uint8_t state; 
-  uint8_t rdy;
-  
-  osDelay(1000);
-  while(1){
-		osDelay(5);
-				
-        while(fifo_bytes_available != 0x0F || state != CC2500_STATE_TX) {
-            CC2500_Write(&bffr, CC2500_SNOP, 1);
-            fifo_bytes_available = bffr & 0x0F;
-            state = (bffr & 0x70);
-            rdy = (bffr & 0x80);
-            printf("Rdy: %x   State: %x   TX Fifo bytes: %x \n",rdy,state,fifo_bytes_available);
-            osDelay(500);
-        }
-      
-        printf("Writing to TX fifo \n");
-        CC2500_Write(send,CC2500_FIFOADDR,5);
-        fifo_bytes_available = 0;
-      
-	}
+void transmit_loop(void) {
+  float pitch = 1.1f;
+  float roll = 2.5f;
+  while (1) {
+    transmit_pitchroll(pitch, roll);
+    osDelay(1000);
+  }
 }
+
+void receive_loop(void) {
+  uint8_t status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SRX);
+  printf("Moved to RX (%x) \n",status);
+  osDelay(500);
+  
+  float pitch, roll; 
+  uint16_t control;
+  while (1) { 
+    control = receive_pitchroll(&pitch, &roll);
+    printf("READ: Pitch = %f  Roll = %f  Control = %x \n",pitch,roll,control);
+  }
+}
+
+
+void transmit_thread(void const *argument) {
+  while (1) {
+    transmit_pitchroll(pitch, roll);
+    osDelay(50);
+  }
+}
+
 
 void receive_thread(void const *argument) {
     
-  uint8_t bffr = 0x00; 
-  printf("BffrSTX before: %x \n",bffr);
-  //CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_STX);
-  //CC2500_Read(&bffr, CC2500_STX, 1); // Transmit mode
-  CC2500_Read(&bffr, CC2500_SRX, 1); // Rec mode
-  printf("BffrSTX after: %x %i \n\n",bffr,bffr);
-  
-  uint8_t get[5];
-  get[0] = 0;
-  get[1] = 0;
-  get[2] = 0;
-  get[3] = 0;
-  get[4] = 0;
-    
-  uint8_t fifo_bytes_available  = 0x0F;
-  uint8_t state; 
-  uint8_t rdy;
-    
-  while (1) {
-      
-      // Waiting 
-      while(fifo_bytes_available == 0x0F) {
-            CC2500_Read(&bffr, CC2500_SNOP, 1);
-            fifo_bytes_available = bffr & 0x0F;
-            state = bffr >> 4;
-            rdy = bffr >> 7;
-            printf("Rdy: %x   State: %x   TX Fifo bytes: %x \n",rdy,state,fifo_bytes_available);
-            osDelay(10);
-      }
-      
-      printf("Reading to RX fifo \n");
-      CC2500_Read(get,CC2500_FIFOADDR,5); 
-      printf("%x  %x  %x  %x  %x \n",get[0],get[1],get[2],get[3],get[4]);      
-      fifo_bytes_available = 0x0F;
-      
-  }
-  
+ 
 }
 
-//void printStatusByte(uint8_t ) {
-    
-//}
+void accelerometer_thread(void const *argument) {
+	float raw_pitch, raw_roll;
+	float a_x, a_y, a_z;
+	int32_t aggregateResult;
+	uint8_t buffer[6];
+	uint8_t x_flag, y_flag; 
+	
+	ring_buffer_t pitch_filter; 
+	int size = PITCH_FILTER_SIZE; 
+	int pitch_buffer[size];
+	init_buffer(&pitch_filter,pitch_buffer,size);
+	
+	ring_buffer_t roll_filter; 
+	size = ROLL_FILTER_SIZE; 
+	int roll_buffer[size];
+	init_buffer(&roll_filter,roll_buffer,size);
+	
+	while(1) {		
+      //LIS3DSH_Read(&buffer[0], LIS3DSH_OUT_X_L, 6);
+      
+      LIS3DSH_Read(&buffer[0], LIS3DSH_OUT_X_L, 1);
+			LIS3DSH_Read(&buffer[1], LIS3DSH_OUT_X_H, 1);
+			LIS3DSH_Read(&buffer[2], LIS3DSH_OUT_Y_L, 1);
+			LIS3DSH_Read(&buffer[3], LIS3DSH_OUT_Y_H, 1);
+			LIS3DSH_Read(&buffer[4], LIS3DSH_OUT_Z_L, 1);
+			LIS3DSH_Read(&buffer[5], LIS3DSH_OUT_Z_H, 1);
+
+      aggregateResult = (int32_t)(buffer[0] | buffer[1] << 8);
+			a_x =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+		
+			aggregateResult = (int32_t)(buffer[2] | buffer[3] << 8);
+			a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+	
+			aggregateResult = (int32_t)(buffer[4] | buffer[5] << 8);
+			a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+		
+			x_flag = 0;
+			y_flag = 0;
+			
+			if (a_x > 2000) {
+				a_x = 4000 - a_x;
+				x_flag = 1;
+			}
+			if (a_y > 2000) {
+				a_y = 4000 - a_y;
+				y_flag = 1;
+			}
+			
+			if (x_flag)
+				raw_pitch = (float) -atan_table(a_x / sqrt(a_y * a_y + a_z * a_z));
+			else 
+				raw_pitch = (float) atan_table(a_x / sqrt(a_y * a_y + a_z * a_z));
+			
+			if (y_flag)
+				raw_roll = (float) -atan_table(a_y / sqrt(a_x * a_x + a_z * a_z));
+			else
+				raw_roll = (float) atan_table(a_y / sqrt(a_x * a_x + a_z * a_z));
+						
+			pitch = filter_point((int) raw_pitch, &pitch_filter);
+			roll = filter_point((int) raw_roll, &roll_filter);
+			
+      //printf("ACCR:  pitch = %f  roll = %f \n",pitch,roll);
+      
+      osDelay(50);
+	}
+}

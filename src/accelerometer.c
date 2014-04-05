@@ -35,52 +35,5 @@ void init_accelerometer(void) {
 	LIS3DSH_Write(&ctrl, LIS3DSH_OFF_Z, 1);
 }
 
-void init_mems_interrupt(void) {	
-	/*
-	Write 0x04 in CTRL_REG_3 to enable interrupt generation on data ready with the following config:
-	Active High
-	Push-Pull
-	I2CFG0 bit set high
-	
-	The data-ready interrupt signal goes high when a new set of acceleration data has been generated in the data registers of the accelerometer. 
-	The interrupt goes low when the system has read the high bytes of the data registers of all enabled axes. 
-	*/
-	//uint8_t buffer = 0x04;
-	//LIS3DSH_Write(&buffer, LIS3DSH_CTRL_REG3, 1); 
-	//LIS3DSH_Write(&buffer, LIS3DSH_CTRL_REG3_ADDR, 1); 
-	
-	//enable the clocks
-	RCC_AHB1PeriphClockCmd(MEMSI_GPIO_CLK, ENABLE);
-	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
 
-	//configure the GPIO pin
-	GPIO_InitTypeDef   GPIO_init_s;
-	GPIO_init_s.GPIO_Mode = GPIO_Mode_IN;
-	GPIO_init_s.GPIO_PuPd = GPIO_PuPd_DOWN; //using pull-down is safer because we are using active high
-	GPIO_init_s.GPIO_Pin = MEMSI_PIN;
-	GPIO_init_s.GPIO_OType = GPIO_OType_PP;
-	GPIO_init_s.GPIO_Speed = GPIO_Speed_50MHz;
-
-	GPIO_Init(MEMSI_GPIO_PORT, &GPIO_init_s);
-
-	//connect EXTI to pin
-	SYSCFG_EXTILineConfig(MEMSI_EXTI_PORT_SOURCE, MEMSI_EXTI_PIN_SOURCE);
-
-	EXTI_InitTypeDef EXTI_init_s;
-	EXTI_init_s.EXTI_Line = MEMSI_EXTI_LINE;
-	EXTI_init_s.EXTI_Mode = EXTI_Mode_Interrupt;
-	EXTI_init_s.EXTI_Trigger = EXTI_Trigger_Rising; //triggers on rising edge
-	EXTI_init_s.EXTI_LineCmd = ENABLE;
-	EXTI_Init(&EXTI_init_s);
-	EXTI_ClearITPendingBit(MEMSI_EXTI_LINE);
-	
-	//NVIC is defined in misc.h and misc.c
-	NVIC_InitTypeDef   NVIC_init_s;
-	NVIC_init_s.NVIC_IRQChannel = MEMSI_NVIC_IRQ_CHANNEL;
-	NVIC_init_s.NVIC_IRQChannelPreemptionPriority = MEMSI_PRIORITY;
-	NVIC_init_s.NVIC_IRQChannelSubPriority = MEMSI_PRIORITY;
-	NVIC_init_s.NVIC_IRQChannelCmd = ENABLE;
-	NVIC_Init(&NVIC_init_s);
-	
-}
 

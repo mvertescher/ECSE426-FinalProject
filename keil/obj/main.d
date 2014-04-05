@@ -43,3 +43,8 @@
 .\obj\main.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
 .\obj\main.o: ..\src\CC2500\smartrf_cc2500.h
 .\obj\main.o: ..\src\CC2500\cc2500.h
+.\obj\main.o: ..\src\wireless.h
+.\obj\main.o: ..\src\filter.h
+.\obj\main.o: ..\src\LIS3DSH\lis3dsh.h
+.\obj\main.o: ..\src\atan_LUT.h
+.\obj\main.o: ..\src\accelerometer.h

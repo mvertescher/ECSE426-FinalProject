@@ -272,7 +272,7 @@ uint8_t CC2500_CommandProbe(uint8_t rw, uint8_t CmdPrbAddr)
     if (rw) {
         CmdPrbAddr |= (uint8_t)READWRITE_CMD;
     }
-	/* Set chip select Low at the start of the transmission */
+	  /* Set chip select Low at the start of the transmission */
     CC2500_CS_LOW();
   
     /* Send the Address of the indexed register */

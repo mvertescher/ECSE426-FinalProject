@@ -12,15 +12,19 @@ compiling system_stm32f4xx.c...
 assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
-../main.c(159): warning:  #111-D: statement is unreachable
-      osDelay(osWaitForever);
-../main.c(26): warning:  #550-D: variable "tid_transmit" was set but never used
-        osThreadId tid_transmit;
-../main.c(27): warning:  #177-D: variable "tid_receive" was declared but never referenced
-      osThreadId tid_receive;
-../main.c(42): warning:  #177-D: variable "arr" was declared but never referenced
-      uint8_t arr[4];
-../main.c: 4 warnings, 0 errors
+../main.c(46): warning:  #550-D: variable "tid_transmit" was set but never used
+    osThreadId tid_transmit;
+../main.c(47): warning:  #550-D: variable "tid_receive" was set but never used
+    osThreadId tid_receive;
+../main.c(48): warning:  #550-D: variable "tid_accelerometer" was set but never used
+    osThreadId tid_accelerometer;    
+../main.c(140): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                        a_x =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+../main.c(143): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                        a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+../main.c(146): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                        a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+../main.c: 6 warnings, 0 errors
 compiling fputc_debug.c...
 compiling accelerometer.c...
 ..\src\accelerometer.c(30): warning:  #68-D: integer conversion resulted in a change of sign
@@ -33,6 +37,12 @@ compiling filter.c...
 ..\src\filter.c(36): warning:  #1-D: last line of file ends without a newline
   }
 ..\src\filter.c: 1 warning, 0 errors
+compiling wireless.c...
+..\src\wireless.c(77): warning:  #177-D: variable "ctrl1" was declared but never referenced
+      uint8_t ctrl1 = pkt_pnt->b1;
+..\src\wireless.c(78): warning:  #177-D: variable "ctrl2" was declared but never referenced
+      uint8_t ctrl2 = pkt_pnt->b2;
+..\src\wireless.c: 2 warnings, 0 errors
 compiling misc.c...
 compiling stm32f4xx_adc.c...
 compiling stm32f4xx_can.c...
@@ -79,9 +89,9 @@ compiling lis3dsh.c...
 ..\src\LIS3DSH\lis3dsh.c: 5 warnings, 0 errors
 compiling gdm1602k.c...
 linking...
-Program Size: Code=13664 RO-data=512 RW-data=92 ZI-data=8116  
+Program Size: Code=17224 RO-data=964 RW-data=116 ZI-data=8628  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 12 Warning(s).
+".\obj\output.axf" - 0 Error(s), 16 Warning(s).
 </pre>
 </body>
 </html>
