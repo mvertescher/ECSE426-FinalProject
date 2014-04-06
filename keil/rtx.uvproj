@@ -357,7 +357,7 @@
               <MiscControls>--c99</MiscControls>
               <Define>__FPU_PRESENT=1 STM32F4XX USE_STDPERIPH_DRIVER=1 HSE_VALUE=8000000 ARM_MATH_CM4=1</Define>
               <Undefine></Undefine>
-              <IncludePath>../;../rtx_cmsis;../inc;../CMSIS/Device/ST/STM32F4xx/Include;../STM32F4xx_StdPeriph_Driver/inc;..\src\CC2500;..\src\GDM1602K;..\src\LIS3DSH;..\src</IncludePath>
+              <IncludePath>../;../rtx_cmsis;../inc;../CMSIS/Device/ST/STM32F4xx/Include;../STM32F4xx_StdPeriph_Driver/inc;..\src\CC2500;..\src\GDM1602K;..\src\LIS3DSH;..\src;..\src\Keyboard</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -2517,6 +2517,21 @@
               <FileName>gdm1602k.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\src\GDM1602K\gdm1602k.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>Keyboard</GroupName>
+          <Files>
+            <File>
+              <FileName>keyboard.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\src\Keyboard\keyboard.h</FilePath>
+            </File>
+            <File>
+              <FileName>keyboard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\src\Keyboard\keyboard.c</FilePath>
             </File>
           </Files>
         </Group>

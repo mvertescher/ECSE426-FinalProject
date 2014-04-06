@@ -36,4 +36,48 @@ void init_accelerometer(void) {
 }
 
 
+void get_pitch_roll(float *pitch, float *roll) { 
+  uint8_t buffer[6];
+ 
+  LIS3DSH_Read(&buffer[0], LIS3DSH_OUT_X_L, 1);
+  LIS3DSH_Read(&buffer[1], LIS3DSH_OUT_X_H, 1);
+  LIS3DSH_Read(&buffer[2], LIS3DSH_OUT_Y_L, 1);
+  LIS3DSH_Read(&buffer[3], LIS3DSH_OUT_Y_H, 1);
+  LIS3DSH_Read(&buffer[4], LIS3DSH_OUT_Z_L, 1);
+  LIS3DSH_Read(&buffer[5], LIS3DSH_OUT_Z_H, 1);
 
+  int32_t aggregateResult = (int32_t)(buffer[0] | buffer[1] << 8);
+  float a_x =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+
+  aggregateResult = (int32_t)(buffer[2] | buffer[3] << 8);
+  float a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+
+  aggregateResult = (int32_t)(buffer[4] | buffer[5] << 8);
+  float a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+
+  uint8_t x_flag = 0;
+  uint8_t y_flag = 0;
+  
+  if (a_x > 2000) {
+    a_x = 4000 - a_x;
+    x_flag = 1;
+  }
+  if (a_y > 2000) {
+    a_y = 4000 - a_y;
+    y_flag = 1;
+  }
+  
+  float raw_pitch, raw_roll; 
+  if (x_flag)
+    raw_pitch = (float) -atan_table(a_x / sqrt(a_y * a_y + a_z * a_z));
+  else 
+    raw_pitch = (float) atan_table(a_x / sqrt(a_y * a_y + a_z * a_z));
+  
+  if (y_flag)
+    raw_roll = (float) -atan_table(a_y / sqrt(a_x * a_x + a_z * a_z));
+  else
+    raw_roll = (float) atan_table(a_y / sqrt(a_x * a_x + a_z * a_z));
+        
+ // pitch = filter_point((int) raw_pitch, &pitch_filter);
+  //roll = filter_point((int) raw_roll, &roll_filter);
+}

@@ -43,6 +43,7 @@
 ".\obj\cc2500.o"
 ".\obj\lis3dsh.o"
 ".\obj\gdm1602k.o"
+".\obj\keyboard.o"
 C:\Keil\ARM\RV31\LIB\RTX_CM4.LIB
 --library_type=microlib --strict --scatter ".\obj\output.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols

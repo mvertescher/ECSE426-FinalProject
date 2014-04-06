@@ -4,7 +4,7 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 C:\Users\Matt\Documents\GitHub\ECSE426-FinalProject\keil\rtx.uvproj
-Project File Date:  04/02/2014
+Project File Date:  04/06/2014
 
 <h2>Output:</h2>
 Rebuild target 'Project'
@@ -12,26 +12,40 @@ compiling system_stm32f4xx.c...
 assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
-../main.c(46): warning:  #550-D: variable "tid_transmit" was set but never used
+..\src\Keyboard\keyboard.h(34): warning:  #1-D: last line of file ends without a newline
+  void disableKeyboardINT(void);
+../main.c(71): warning:  #550-D: variable "tid_transmit" was set but never used
     osThreadId tid_transmit;
-../main.c(47): warning:  #550-D: variable "tid_receive" was set but never used
+../main.c(72): warning:  #550-D: variable "tid_receive" was set but never used
     osThreadId tid_receive;
-../main.c(48): warning:  #550-D: variable "tid_accelerometer" was set but never used
+../main.c(73): warning:  #550-D: variable "tid_accelerometer" was set but never used
     osThreadId tid_accelerometer;    
-../main.c(140): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+../main.c(159): warning:  #1035-D: single-precision operand implicitly converted to double-precision
                         a_x =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-../main.c(143): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+../main.c(162): warning:  #1035-D: single-precision operand implicitly converted to double-precision
                         a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-../main.c(146): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+../main.c(165): warning:  #1035-D: single-precision operand implicitly converted to double-precision
                         a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-../main.c: 6 warnings, 0 errors
+../main.c: 7 warnings, 0 errors
 compiling fputc_debug.c...
 compiling accelerometer.c...
 ..\src\accelerometer.c(30): warning:  #68-D: integer conversion resulted in a change of sign
         ctrl = OFFSET_X;
 ..\src\accelerometer.c(32): warning:  #68-D: integer conversion resulted in a change of sign
         ctrl = OFFSET_Y;
-..\src\accelerometer.c: 2 warnings, 0 errors
+..\src\accelerometer.c(50): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+    float a_x =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+..\src\accelerometer.c(53): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+    float a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+..\src\accelerometer.c(56): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+    float a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
+..\src\accelerometer.c(83): warning:  #1-D: last line of file ends without a newline
+  }
+..\src\accelerometer.c(70): warning:  #550-D: variable "raw_pitch" was set but never used
+    float raw_pitch, raw_roll; 
+..\src\accelerometer.c(70): warning:  #550-D: variable "raw_roll" was set but never used
+    float raw_pitch, raw_roll; 
+..\src\accelerometer.c: 8 warnings, 0 errors
 compiling atan_LUT.c...
 compiling filter.c...
 ..\src\filter.c(36): warning:  #1-D: last line of file ends without a newline
@@ -88,10 +102,16 @@ compiling lis3dsh.c...
           *out =(float)(LIS3DSH_SENSITIVITY_16G * (float)aggregateResult);
 ..\src\LIS3DSH\lis3dsh.c: 5 warnings, 0 errors
 compiling gdm1602k.c...
+compiling keyboard.c...
+..\src\Keyboard\keyboard.h(34): warning:  #1-D: last line of file ends without a newline
+  void disableKeyboardINT(void);
+..\src\Keyboard\keyboard.c(251): warning:  #1-D: last line of file ends without a newline
+  }
+..\src\Keyboard\keyboard.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=17224 RO-data=964 RW-data=116 ZI-data=8628  
+Program Size: Code=22224 RO-data=984 RW-data=136 ZI-data=8640  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 16 Warning(s).
+".\obj\output.axf" - 0 Error(s), 25 Warning(s).
 </pre>
 </body>
 </html>
