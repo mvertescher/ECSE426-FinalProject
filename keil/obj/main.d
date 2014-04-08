@@ -49,3 +49,4 @@
 .\obj\main.o: ..\src\atan_LUT.h
 .\obj\main.o: ..\src\accelerometer.h
 .\obj\main.o: ..\src\Keyboard\keyboard.h
+.\obj\main.o: ..\src\HS422\motor.h

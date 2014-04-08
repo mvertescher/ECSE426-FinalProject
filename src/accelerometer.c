@@ -36,7 +36,7 @@ void init_accelerometer(void) {
 }
 
 
-void get_pitch_roll(float *pitch, float *roll) { 
+void get_pitch_roll(float *pitch_pnt, float *roll_pnt) { 
   uint8_t buffer[6];
  
   LIS3DSH_Read(&buffer[0], LIS3DSH_OUT_X_L, 1);
@@ -78,6 +78,4 @@ void get_pitch_roll(float *pitch, float *roll) {
   else
     raw_roll = (float) atan_table(a_y / sqrt(a_x * a_x + a_z * a_z));
         
- // pitch = filter_point((int) raw_pitch, &pitch_filter);
-  //roll = filter_point((int) raw_roll, &roll_filter);
 }

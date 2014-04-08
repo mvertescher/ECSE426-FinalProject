@@ -33,4 +33,4 @@
 void init_accelerometer(void);
 void init_mems_interrupt(void);
 
-
+void get_pitch_roll(float *pitch_pnt, float *roll_pnt);

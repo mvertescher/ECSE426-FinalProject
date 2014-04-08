@@ -4,7 +4,7 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 C:\Users\Matt\Documents\GitHub\ECSE426-FinalProject\keil\rtx.uvproj
-Project File Date:  04/06/2014
+Project File Date:  04/08/2014
 
 <h2>Output:</h2>
 Rebuild target 'Project'
@@ -12,21 +12,37 @@ compiling system_stm32f4xx.c...
 assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
+..\src\wireless.h(43): warning:  #1295-D: Deprecated declaration transmit_keypad_begin - give arg types
+  void transmit_keypad_begin();
+..\src\wireless.h(44): warning:  #1295-D: Deprecated declaration transmit_keypad_end - give arg types
+  void transmit_keypad_end();
 ..\src\Keyboard\keyboard.h(34): warning:  #1-D: last line of file ends without a newline
   void disableKeyboardINT(void);
-../main.c(71): warning:  #550-D: variable "tid_transmit" was set but never used
+..\src\HS422\motor.h(6): warning:  #1-D: last line of file ends without a newline
+  void motorEnable(void);
+../main.c(76): warning:  #550-D: variable "tid_transmit" was set but never used
     osThreadId tid_transmit;
-../main.c(72): warning:  #550-D: variable "tid_receive" was set but never used
+../main.c(77): warning:  #550-D: variable "tid_receive" was set but never used
     osThreadId tid_receive;
-../main.c(73): warning:  #550-D: variable "tid_accelerometer" was set but never used
+../main.c(78): warning:  #550-D: variable "tid_accelerometer" was set but never used
     osThreadId tid_accelerometer;    
-../main.c(159): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-                        a_x =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-../main.c(162): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-                        a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-../main.c(165): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-                        a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-../main.c: 7 warnings, 0 errors
+../main.c(179): warning:  #177-D: variable "a_x" was declared but never referenced
+        float a_x, a_y, a_z;
+../main.c(179): warning:  #177-D: variable "a_y" was declared but never referenced
+        float a_x, a_y, a_z;
+../main.c(179): warning:  #177-D: variable "a_z" was declared but never referenced
+        float a_x, a_y, a_z;
+../main.c(180): warning:  #177-D: variable "aggregateResult" was declared but never referenced
+        int32_t aggregateResult;
+../main.c(181): warning:  #177-D: variable "buffer" was declared but never referenced
+        uint8_t buffer[6];
+../main.c(182): warning:  #177-D: variable "x_flag" was declared but never referenced
+        uint8_t x_flag, y_flag; 
+../main.c(182): warning:  #177-D: variable "y_flag" was declared but never referenced
+        uint8_t x_flag, y_flag; 
+../main.c(251): warning:  #177-D: variable "string" was declared but never referenced
+    char string[5]= {0};
+../main.c: 15 warnings, 0 errors
 compiling fputc_debug.c...
 compiling accelerometer.c...
 ..\src\accelerometer.c(30): warning:  #68-D: integer conversion resulted in a change of sign
@@ -39,7 +55,7 @@ compiling accelerometer.c...
     float a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
 ..\src\accelerometer.c(56): warning:  #1035-D: single-precision operand implicitly converted to double-precision
     float a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-..\src\accelerometer.c(83): warning:  #1-D: last line of file ends without a newline
+..\src\accelerometer.c(81): warning:  #1-D: last line of file ends without a newline
   }
 ..\src\accelerometer.c(70): warning:  #550-D: variable "raw_pitch" was set but never used
     float raw_pitch, raw_roll; 
@@ -52,11 +68,17 @@ compiling filter.c...
   }
 ..\src\filter.c: 1 warning, 0 errors
 compiling wireless.c...
-..\src\wireless.c(77): warning:  #177-D: variable "ctrl1" was declared but never referenced
+..\src\wireless.h(43): warning:  #1295-D: Deprecated declaration transmit_keypad_begin - give arg types
+  void transmit_keypad_begin();
+..\src\wireless.h(44): warning:  #1295-D: Deprecated declaration transmit_keypad_end - give arg types
+  void transmit_keypad_end();
+..\src\wireless.c(78): warning:  #177-D: variable "ctrl1" was declared but never referenced
       uint8_t ctrl1 = pkt_pnt->b1;
-..\src\wireless.c(78): warning:  #177-D: variable "ctrl2" was declared but never referenced
+..\src\wireless.c(79): warning:  #177-D: variable "ctrl2" was declared but never referenced
       uint8_t ctrl2 = pkt_pnt->b2;
-..\src\wireless.c: 2 warnings, 0 errors
+..\src\wireless.c(184): warning:  #177-D: variable "index" was declared but never referenced
+                uint8_t index;
+..\src\wireless.c: 5 warnings, 0 errors
 compiling misc.c...
 compiling stm32f4xx_adc.c...
 compiling stm32f4xx_can.c...
@@ -108,10 +130,15 @@ compiling keyboard.c...
 ..\src\Keyboard\keyboard.c(251): warning:  #1-D: last line of file ends without a newline
   }
 ..\src\Keyboard\keyboard.c: 2 warnings, 0 errors
+compiling motor.c...
+..\src\HS422\motor.h(6): warning:  #1-D: last line of file ends without a newline
+  void motorEnable(void);
+..\src\HS422\motor.c(7): warning:  #177-D: variable "duty" was declared but never referenced
+    uint32_t duty;
+..\src\HS422\motor.c(69): warning:  #1-D: last line of file ends without a newline
+  }
+..\src\HS422\motor.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=22224 RO-data=984 RW-data=136 ZI-data=8640  
+Program Size: Code=26716 RO-data=1008 RW-data=140 ZI-data=8716  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 25 Warning(s).
-</pre>
-</body>
-</html>
+".\obj\output.axf" - 0 Error(s), 39 Warning(s).
