@@ -280,7 +280,8 @@ void keyboard_thread(void const *argument) {
       
       // Wait for keypad INT
       osSignalWait(0x08, osWaitForever);
-     
+			
+			// Read the current key 
       keyCurrent = readKeyboard(); 
       
       transmit_locked = 1; // Lock transmitter
