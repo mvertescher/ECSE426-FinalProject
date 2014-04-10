@@ -1,5 +1,35 @@
 #include "keyboard.h"
 
+void readValue(float* value, osThreadId* tid_keyboard){
+  uint8_t flag =1;
+  int8_t sign = 0;
+  uint8_t keyCurrent=0xFF;
+
+  while(flag){
+    osSignalWait(0x08, osWaitForever);
+    keyCurrent = readKeyboard();
+    returnValue(keyCurrent, value, &flag, &sign);
+    osDelay(200);
+    osSignalClear(*tid_keyboard, 0x08);
+  }
+}
+void returnValue(uint8_t keyCurrent, float* value, uint8_t* flag, int8_t* sign){
+
+  if(keyCurrent==STAR){
+						*sign=1;
+					}
+	if(keyCurrent==POUND){
+						*sign=-1;
+					}
+	if((sign!=0)&(keyToNumber(keyCurrent)<10)){
+            *value =*value*10+keyToNumber(keyCurrent);
+					}
+	if(keyCurrent == D){
+      *value = (*value)*(*sign);
+      *flag = 0;
+      *sign = 0;
+		}
+}
 uint8_t readKeyboard(void){
 	
 	uint8_t output=0;

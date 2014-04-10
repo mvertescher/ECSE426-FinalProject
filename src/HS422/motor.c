@@ -6,9 +6,9 @@
 void motorControl(float pitch, float roll){
   uint32_t duty;
   roll = (190*(roll+90)/9)+1200;
-	pitch = (190*(pitch+90)/9)+1200;
-  TIM_SetCompare1(TIM8, pitch);
-	TIM_SetCompare3(TIM8, roll);
+	pitch = (175*(pitch+90)/9)+1200;
+  TIM_SetCompare1(TIM8, roll); // PC6
+	TIM_SetCompare3(TIM8, pitch); // PC8
 }
 /*
   Set up of the GPIO pin, Timer and PWM settings for the Motor

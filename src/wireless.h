@@ -34,8 +34,8 @@ typedef struct
 #define PACKET_CTRL1_RECORD_END    0x9
 
 uint8_t init_wireless(void);
-void transmit_pitchroll(float pitch, float roll);
-uint16_t receive_pitchroll(float* pitch, float* roll);
+void transmit_pitchroll(float pitch, float roll, uint8_t ctrl2);
+uint16_t receive_pitchroll(float* pitch, float* roll, uint8_t* ctrl2);
 
 void transmit_keypad_begin();
 void transmit_keypad_pitch(float pitch);
@@ -44,8 +44,8 @@ void transmit_keypad_time(float time);
 void transmit_keypad_end();
 void receive_keypad(uint8_t *ctrl, float *value);
 
-void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer);
-void receive_record_sequence(float *pitchBuffer, float *rollBuffer);
+void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer, float time_interval);
+void receive_record_sequence(float *pitchBuffer, float *rollBuffer, float *time_interval);
 
 void wait_for_idle(void);
 void print_status(void);

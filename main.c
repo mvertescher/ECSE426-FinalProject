@@ -20,6 +20,11 @@
 
 #define IS_TRANSMITTER      1
 
+
+#define TRANSMIT_DELAY      10
+#define ACCR_DELAY          10
+#define MOTOR_DELAY         10
+
 /*!
  @brief Thread to perform menial tasks such as switching LEDs
  @param argument Unused
@@ -116,10 +121,19 @@ int main (void) {
 
 
 void transmit_thread(void const *argument) {
+  uint8_t pkt_index = 0; 
   while (1) {
-    if (!transmit_locked)
-      transmit_pitchroll(pitch, roll);
-    osDelay(20);
+    if (!transmit_locked) {
+      transmit_pitchroll(pitch, roll, pkt_index);
+      pkt_index++;
+      if (pkt_index >= 256) {
+        pkt_index = 0;
+      }  
+    }
+    else {
+      pkt_index = 0;
+    }  
+    osDelay(TRANSMIT_DELAY);
   }
 }
 
@@ -127,13 +141,14 @@ void transmit_thread(void const *argument) {
 void receive_thread(void const *argument) {
   uint8_t status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SRX);
   printf("Moved to RX (%x) \n",status);
-  osDelay(500);
+  //osDelay(500);
   
-  float pitch, roll, value; 
+  float f1, f2, value; 
   uint16_t control;
   uint8_t ctrl = 0;
+  uint8_t ctrl2 = 0;
   while (1) { 
-    control = receive_pitchroll(&pitch, &roll);
+    control = receive_pitchroll(&f1, &f2, &ctrl2);
     if (control == PACKET_CTRL1_BEGIN) {
       while (ctrl != PACKET_CTRL1_END) {
         receive_keypad(&ctrl, &value);
@@ -158,19 +173,37 @@ void receive_thread(void const *argument) {
       ctrl = 0; // reset control
     }
     else if (control == PACKET_CTRL1_PR) {
-      measurements.pitch = pitch;
-      measurements.roll = roll;
+      measurements.pitch = f1;
+      measurements.roll = f2;
+      printf("READ: Pitch = %f  Roll = %f  Control1 = %x  Pkt_index = %i \n",f1,f2,control,ctrl2);
     }
 		
 		else if (control == PACKET_CTRL1_RECORD_BEGIN) {
 			float pitchBuffer[256];
 			float rollBuffer[256];
-			receive_record_sequence(pitchBuffer,rollBuffer);
-			
+      float time_interval = f1; 
+			receive_record_sequence(pitchBuffer,rollBuffer,&time_interval);
+			printf("RECV: Record Sequence: \n");
+      int i;
+      //for (i = 0; i < 256; i++) {
+      //  printf("RECV: Record Sequence: Pitch = %f  Roll = %f \n", pitchBuffer[i], rollBuffer[i]);
+      //}  
+      measurements.follow = 3; // Stop following
+      
+      printf("Motors moving sequence, timedelay = %f \n",time_interval); 
+      i = 0;
+      while (i < 256) {
+        motorControl(pitchBuffer[i], rollBuffer[i]);
+        printf("Motors moving to angle: index = %i  Pitch = %f  Roll = %f \n",i,pitchBuffer[i],rollBuffer[i]); 
+        osDelay((int)time_interval);
+      }
+      
+      osDelay(1000);
+      measurements.follow = 1; // Stop following
 		}	
 			
-    if (control == 1)
-      printf("READ: Pitch = %f  Roll = %f  Control = %x \n",pitch,roll,control);
+    //if (control == 1)
+      
   }
 }
 
@@ -197,8 +230,8 @@ void accelerometer_thread(void const *argument) {
 			roll= filter_point((int) raw_roll, &roll_filter);
       measurements.pitch = pitch;
       measurements.roll = roll;
-      
-      osDelay(20);
+      //printf("ACCR: Pitch = %f  Roll = %f \n",pitch,roll);
+      osDelay(ACCR_DELAY);
 	}
 }
 
@@ -230,7 +263,7 @@ void motor_thread(void const *argument) {
       osMutexRelease(measureUpdate);
       
 		}
-		if(values->follow==0){
+		if(values->follow == 0){
       osSignalWait(0x02, osWaitForever);
       osMutexWait(measureUpdate, osWaitForever);
       roll = roll+values->rollIncrement;
@@ -248,139 +281,95 @@ void motor_thread(void const *argument) {
       }
       osMutexRelease(measureUpdate);
 		}
-		osDelay(10);
+    
+    if(values->follow == 3){
+      osDelay(1000);
+    }
+		osDelay(MOTOR_DELAY);
 	}
 }
 
 void keyboard_thread(void const *argument) {
-  /*
-	 1 = 0xee, 2 = 0xed, 3 = 0xeb, A = 0xe7
-	 4 = 0xde, 5 = 0xdd, 6 = 0xdb, B = 0xd7
-	 7 = 0xbe, 8 = 0xbd, 9 = 0xbb, C = 0xb7
-	 * = 0x7e, 0 = 0x7d, # = 0x7b, D = 0x77
-	*/
+
 	struct Values *values = (struct Values*)argument;
 	
-  //Flag Variables
-	uint8_t roll = 0;
-	uint8_t pitch = 0;
-	uint8_t time=0;
-	int8_t sign=0;
-	uint8_t keyCount=0;
-  
+  uint8_t keyboard_mode=0;
   float currentRoll=0;
   float currentPitch=0;
   float previousRoll=0;
   float previousPitch=0;
-  uint32_t mstime=0;
+  
+  float mstime=0;
   
 	uint8_t keyCurrent = 0xFF;
 	
+
 	while(1){
       
       // Wait for keypad INT
       osSignalWait(0x08, osWaitForever);
-			
 			// Read the current key 
       keyCurrent = readKeyboard(); 
       
       transmit_locked = 1; // Lock transmitter
-   
-			
+      
       printf("Keyboard Value 0x%x\n", keyCurrent);
-			if(keyCurrent==0xE7){
-        osMutexWait(measureUpdate, osWaitForever);
-				values->follow=0;
-        osMutexRelease(measureUpdate);
-				currentRoll=0;
-        previousRoll= values->roll;
-        previousPitch = values->pitch;
-				roll=1;
+      
+      if((keyCurrent == D) && (keyboard_mode == KEYBOARD_STATE_IDLE)){
+        printf("Recording sequence!!! \n");
         
-        int i; 
-        for (i = 0; i < 1; i++)
-          transmit_keypad_begin();
+        float pitchBuffer[256];
+        float rollBuffer[256];
+        uint32_t time_ms = 100;
+                
+        // Record sequence
+        int index = 0;
+        while (index < 256) {
+          pitchBuffer[index] = measurements.pitch;
+          rollBuffer[index] = measurements.roll;
+          printf("Index = %i  Pitch = %f  Roll = %f \n",index,pitchBuffer[index],rollBuffer[index]);
+          index++;
+          osDelay(time_ms); 
+        }  
         
-			}
-			if(roll==1){
-              osMutexWait(measureUpdate, osWaitForever);
-              strcpy(values->line1, " Please Enter a ");
-              strcpy(values->line2, "   Roll Angle   ");
-              osMutexRelease(measureUpdate);
-					if(keyCurrent==0x7E){
-						sign=1;
-					}
-					if(keyCurrent==0x7B){
-						sign=-1;
-					}
-					if((sign!=0)&(keyToNumber(keyCurrent)<10)){
-                        currentRoll =currentRoll*10+keyToNumber(keyCurrent);
-						printf("Roll %f\n", currentRoll);
-						++keyCount;
-					}
-					if(keyCurrent == 0x77){
-						keyCount=0;
-                        currentRoll = currentRoll*sign;
-                        sign=0;
-						roll=0;
-                        printf("Angle %f\n", currentRoll);
-					}
-			}
-			if(keyCurrent==0xd7){
-				osMutexWait(measureUpdate, osWaitForever);
-				values->follow=0;
-                osMutexRelease(measureUpdate);
-				currentPitch=0;
-				pitch=1;
-			}
-			if(pitch==1){
+        printf("Sending sequence!!! \n");
+        transmit_record_sequence(256, pitchBuffer, rollBuffer, (float) time_ms);
+        
+        printf("Done transmitting sequence!!! \n");
+        osDelay(10000);
+        transmit_locked = 0;
+      }
+    
+      else if((keyCurrent==A) || (keyboard_mode== KEYBOARD_STATE_PRT)){
+        keyboard_mode = KEYBOARD_STATE_PRT;
+        if(keyCurrent == A){
           osMutexWait(measureUpdate, osWaitForever);
-          strcpy(values->line1, " Please Enter a ");
-          strcpy(values->line2, "  Pitch Angle   ");
+          values->follow=0;
+          previousRoll= values->roll;
+          previousPitch = values->pitch;
           osMutexRelease(measureUpdate);
-					if(keyCurrent==0x7E){
-						sign=1;
-					}
-					if(keyCurrent==0x7B){
-						sign=-1;
-					}
-					if((sign!=0)&(keyToNumber(keyCurrent)<10)){
-            currentPitch = currentPitch*10+keyToNumber(keyCurrent);
-						printf("Pitch %f\n", currentPitch);
-						++keyCount;
-					}
-					if(keyCurrent == 0x77){
-						currentPitch = currentPitch*sign;
-                        printf("Angle %f\n", currentPitch);
-						keyCount=0;
-						sign=0;
-						pitch=0;
-					}
+          currentRoll=0;
+          
+          for (int i = 0; i < 1; i++)
+            transmit_keypad_begin();
+          
+          readValue(&currentRoll, &tid_keyboard);
+        }
+        if(keyCurrent == B){
+          currentPitch=0;
+          readValue(&currentPitch, &tid_keyboard);
 			}
-			if(keyCurrent==0xB7){
-				values->follow=0;
-				values->time=0;
-				time=1;
-			}
-			if(time==1){
-              osMutexWait(measureUpdate, osWaitForever);
-              strcpy(values->line1, " Please Enter a ");
-              strcpy(values->line2, "    Time in s   ");
-              osMutexRelease(measureUpdate);
-					if(keyToNumber(keyCurrent)<10){
-						mstime=mstime*10+keyToNumber(keyCurrent);
-						printf("Time %ums\n", mstime);
-						++keyCount;
-					}
-					if(keyCurrent == 0x77){
-						keyCount=0;
-						time=0;
+        if(keyCurrent == C){
+            mstime=0;
+            readValue(&mstime, &tid_keyboard);
+          
             osMutexWait(measureUpdate, osWaitForever);
             values->time= (float)(mstime/100);
             values->rollIncrement = (currentRoll-previousRoll)/(mstime/100);
             values->pitchIncrement = (currentPitch-previousPitch)/(mstime/100);
-            printf("RollInc %f PitchInc %f\n", values->rollIncrement, values->pitchIncrement);
-            
+            printf("Roll %f Pitch %f Time %f ms\n", currentRoll, currentPitch, mstime);
+            //printf("RollInc %f PitchInc %f\n", values->rollIncrement, values->pitchIncrement);
+              
             // Transmit 
             printf("SENDING pitchIncrement = %f \n",values->pitchIncrement);
             transmit_keypad_pitch(values->pitchIncrement);
@@ -397,18 +386,22 @@ void keyboard_thread(void const *argument) {
             osMutexRelease(measureUpdate);
             //osTimerStart(timerid_motor,100);
             printf("Time %f\n", values->time);           
-            
+              
             // Start transmitting again after delay
             osDelay(6000);
             transmit_locked = 0; // unlock transmit
-            mstime = 0; // reset mstime
-					}
-    }
-		osDelay(200);
+            keyboard_mode = KEYBOARD_STATE_IDLE;
+        }
+			}
+      else {
+        transmit_locked = 0;
+      } 
+   
+    osDelay(200);
     osSignalClear(tid_keyboard, 0x08);
+    }
+
 	}
-  
-}
 
 //KeyBoard handlers
 void EXTI1_IRQHandler(){

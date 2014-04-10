@@ -24,13 +24,13 @@ uint8_t init_wireless(void) {
 }
 
 
-void transmit_pitchroll(float pitch, float roll) {
+void transmit_pitchroll(float pitch, float roll, uint8_t ctrl2) {
 
     packet_t pkt;
     pkt.f1 = pitch;
     pkt.f2 = roll;
     pkt.b1 = PACKET_CTRL1_PR;
-    pkt.b2 = 2;
+    pkt.b2 = ctrl2;
     
     //printf("        pitch = %f ", pkt.f1);
     uint8_t *pnt = (uint8_t *) &pkt;
@@ -51,11 +51,11 @@ void transmit_pitchroll(float pitch, float roll) {
     
     // The CC2500 will move back into the idle state when the transmission has been sent 
     //wait_for_idle();
-    osDelay(20);
+    //osDelay(20);
     
 }
 
-uint16_t receive_pitchroll(float* pitch, float* roll) {
+uint16_t receive_pitchroll(float* pitch, float* roll, uint8_t* ctrl2) {
   // assume already in RX
     // Wait for a transmisson to be read. When this happens, the CC2500 will move to the idle state
     wait_for_idle();
@@ -76,7 +76,7 @@ uint16_t receive_pitchroll(float* pitch, float* roll) {
     *pitch = pkt_pnt->f1;
     *roll = pkt_pnt->f2;
     uint8_t ctrl1 = pkt_pnt->b1;
-    uint8_t ctrl2 = pkt_pnt->b2;
+    *ctrl2 = pkt_pnt->b2;
     
     // Exract data
     //*pitch = buffer[0]; 
@@ -146,9 +146,9 @@ void transmit_keypad_end() {
     send_packet(pnt);
 }
 
-void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer) {
+void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer, float time_interval) {
 		packet_t pkt;
-    pkt.f1 = 0;
+    pkt.f1 = time_interval;
     pkt.f2 = 0;
     pkt.b1 = PACKET_CTRL1_RECORD_BEGIN;
     pkt.b2 = 0;
@@ -156,18 +156,22 @@ void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer) {
 		
 		// Send start packet
 		send_packet(pnt);
-
+    osDelay(100);
+  
 		pkt.b1 = PACKET_CTRL1_RECORD_PKT;
-		uint8_t index;
-		for (index = 0; index < size; index++) {
+		uint8_t index = 0;
+		while (index != 255) {
 			pkt.f1 = pitchBuffer[index];
-			pkt.f2 = pitchBuffer[index];
+			pkt.f2 = rollBuffer[index];
 			pkt.b2 = index;
-			 
+			printf("Sending recorded data pkt Index = %i  Pitch = %f  Roll = %f  \n", index, pkt.f1, pkt.f2);
 			send_packet(pnt);
 			
 			osDelay(30); // Could be 20
+      index++;
 		}
+    
+    osDelay(100);
 		
 		pkt.f1 = 0;
     pkt.f2 = 0;
@@ -181,7 +185,7 @@ void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer) {
 		osDelay(5000);
 }
 
-void receive_record_sequence(float *pitchBuffer, float *rollBuffer) {
+void receive_record_sequence(float *pitchBuffer, float *rollBuffer, float *time_interval) {
 		uint8_t ctrl1 = PACKET_CTRL1_RECORD_PKT;
 		uint8_t index;
 		packet_t pkt;
@@ -189,9 +193,14 @@ void receive_record_sequence(float *pitchBuffer, float *rollBuffer) {
 		while (ctrl1 != PACKET_CTRL1_RECORD_END) {
 			wait_for_idle();
 			read_packet(&pkt);
-			pitchBuffer[pkt.b2] = pkt.f1;
-			pitchBuffer[pkt.b2] = pkt.f2;
-			ctrl1 = pkt.b1;
+      ctrl1 = pkt.b1;
+			if (ctrl1 == PACKET_CTRL1_RECORD_PKT) {
+        pitchBuffer[pkt.b2] = pkt.f1;
+        rollBuffer[pkt.b2] = pkt.f2;
+        
+      
+        printf("Secieved recorded data pkt %i \n", pkt.b2);
+      }
 		}
 }
 
@@ -261,7 +270,7 @@ void wait_for_idle(void) {
     uint8_t status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
     while ((status & 0x70) != CC2500_STATE_IDLE) {
         //printf("Waiting for idle state. (%x) \n",status);
-        osDelay(20);
+        osDelay(8);
         status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
     }  
 }  

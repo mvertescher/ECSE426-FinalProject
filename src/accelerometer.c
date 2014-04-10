@@ -77,5 +77,7 @@ void get_pitch_roll(float *pitch_pnt, float *roll_pnt) {
     raw_roll = (float) -atan_table(a_y / sqrt(a_x * a_x + a_z * a_z));
   else
     raw_roll = (float) atan_table(a_y / sqrt(a_x * a_x + a_z * a_z));
-        
+  
+  *pitch_pnt = raw_pitch;
+  *roll_pnt = raw_roll;
 }

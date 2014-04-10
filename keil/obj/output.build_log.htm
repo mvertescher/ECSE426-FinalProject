@@ -12,35 +12,35 @@ compiling system_stm32f4xx.c...
 assembling startup_stm32f4xx.s...
 compiling RTX_Conf_CM.c...
 compiling main.c...
-..\src\wireless.h(43): warning:  #1295-D: Deprecated declaration transmit_keypad_begin - give arg types
+..\src\wireless.h(40): warning:  #1295-D: Deprecated declaration transmit_keypad_begin - give arg types
   void transmit_keypad_begin();
 ..\src\wireless.h(44): warning:  #1295-D: Deprecated declaration transmit_keypad_end - give arg types
   void transmit_keypad_end();
-..\src\Keyboard\keyboard.h(34): warning:  #1-D: last line of file ends without a newline
+..\src\Keyboard\keyboard.h(64): warning:  #1-D: last line of file ends without a newline
   void disableKeyboardINT(void);
 ..\src\HS422\motor.h(6): warning:  #1-D: last line of file ends without a newline
   void motorEnable(void);
-../main.c(76): warning:  #550-D: variable "tid_transmit" was set but never used
+../main.c(81): warning:  #550-D: variable "tid_transmit" was set but never used
     osThreadId tid_transmit;
-../main.c(77): warning:  #550-D: variable "tid_receive" was set but never used
+../main.c(82): warning:  #550-D: variable "tid_receive" was set but never used
     osThreadId tid_receive;
-../main.c(78): warning:  #550-D: variable "tid_accelerometer" was set but never used
+../main.c(83): warning:  #550-D: variable "tid_accelerometer" was set but never used
     osThreadId tid_accelerometer;    
-../main.c(179): warning:  #177-D: variable "a_x" was declared but never referenced
+../main.c(212): warning:  #177-D: variable "a_x" was declared but never referenced
         float a_x, a_y, a_z;
-../main.c(179): warning:  #177-D: variable "a_y" was declared but never referenced
+../main.c(212): warning:  #177-D: variable "a_y" was declared but never referenced
         float a_x, a_y, a_z;
-../main.c(179): warning:  #177-D: variable "a_z" was declared but never referenced
+../main.c(212): warning:  #177-D: variable "a_z" was declared but never referenced
         float a_x, a_y, a_z;
-../main.c(180): warning:  #177-D: variable "aggregateResult" was declared but never referenced
+../main.c(213): warning:  #177-D: variable "aggregateResult" was declared but never referenced
         int32_t aggregateResult;
-../main.c(181): warning:  #177-D: variable "buffer" was declared but never referenced
+../main.c(214): warning:  #177-D: variable "buffer" was declared but never referenced
         uint8_t buffer[6];
-../main.c(182): warning:  #177-D: variable "x_flag" was declared but never referenced
+../main.c(215): warning:  #177-D: variable "x_flag" was declared but never referenced
         uint8_t x_flag, y_flag; 
-../main.c(182): warning:  #177-D: variable "y_flag" was declared but never referenced
+../main.c(215): warning:  #177-D: variable "y_flag" was declared but never referenced
         uint8_t x_flag, y_flag; 
-../main.c(251): warning:  #177-D: variable "string" was declared but never referenced
+../main.c(240): warning:  #177-D: variable "string" was declared but never referenced
     char string[5]= {0};
 ../main.c: 15 warnings, 0 errors
 compiling fputc_debug.c...
@@ -55,30 +55,24 @@ compiling accelerometer.c...
     float a_y =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
 ..\src\accelerometer.c(56): warning:  #1035-D: single-precision operand implicitly converted to double-precision
     float a_z =(float)(LIS3DSH_SENSITIVITY_2G * (float)aggregateResult);
-..\src\accelerometer.c(81): warning:  #1-D: last line of file ends without a newline
+..\src\accelerometer.c(83): warning:  #1-D: last line of file ends without a newline
   }
-..\src\accelerometer.c(70): warning:  #550-D: variable "raw_pitch" was set but never used
-    float raw_pitch, raw_roll; 
-..\src\accelerometer.c(70): warning:  #550-D: variable "raw_roll" was set but never used
-    float raw_pitch, raw_roll; 
-..\src\accelerometer.c: 8 warnings, 0 errors
+..\src\accelerometer.c: 6 warnings, 0 errors
 compiling atan_LUT.c...
 compiling filter.c...
 ..\src\filter.c(36): warning:  #1-D: last line of file ends without a newline
   }
 ..\src\filter.c: 1 warning, 0 errors
 compiling wireless.c...
-..\src\wireless.h(43): warning:  #1295-D: Deprecated declaration transmit_keypad_begin - give arg types
+..\src\wireless.h(40): warning:  #1295-D: Deprecated declaration transmit_keypad_begin - give arg types
   void transmit_keypad_begin();
 ..\src\wireless.h(44): warning:  #1295-D: Deprecated declaration transmit_keypad_end - give arg types
   void transmit_keypad_end();
 ..\src\wireless.c(78): warning:  #177-D: variable "ctrl1" was declared but never referenced
       uint8_t ctrl1 = pkt_pnt->b1;
-..\src\wireless.c(79): warning:  #177-D: variable "ctrl2" was declared but never referenced
-      uint8_t ctrl2 = pkt_pnt->b2;
-..\src\wireless.c(184): warning:  #177-D: variable "index" was declared but never referenced
+..\src\wireless.c(190): warning:  #177-D: variable "index" was declared but never referenced
                 uint8_t index;
-..\src\wireless.c: 5 warnings, 0 errors
+..\src\wireless.c: 4 warnings, 0 errors
 compiling misc.c...
 compiling stm32f4xx_adc.c...
 compiling stm32f4xx_can.c...
@@ -125,9 +119,9 @@ compiling lis3dsh.c...
 ..\src\LIS3DSH\lis3dsh.c: 5 warnings, 0 errors
 compiling gdm1602k.c...
 compiling keyboard.c...
-..\src\Keyboard\keyboard.h(34): warning:  #1-D: last line of file ends without a newline
+..\src\Keyboard\keyboard.h(64): warning:  #1-D: last line of file ends without a newline
   void disableKeyboardINT(void);
-..\src\Keyboard\keyboard.c(251): warning:  #1-D: last line of file ends without a newline
+..\src\Keyboard\keyboard.c(281): warning:  #1-D: last line of file ends without a newline
   }
 ..\src\Keyboard\keyboard.c: 2 warnings, 0 errors
 compiling motor.c...
@@ -139,9 +133,9 @@ compiling motor.c...
   }
 ..\src\HS422\motor.c: 3 warnings, 0 errors
 linking...
-Program Size: Code=26716 RO-data=1008 RW-data=140 ZI-data=8716  
+Program Size: Code=27228 RO-data=1008 RW-data=140 ZI-data=8716  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 39 Warning(s).
+".\obj\output.axf" - 0 Error(s), 36 Warning(s).
 </pre>
 </body>
 </html>

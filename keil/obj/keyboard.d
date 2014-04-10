@@ -37,3 +37,5 @@
 .\obj\keyboard.o: ../STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_usart.h
 .\obj\keyboard.o: ../STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_wwdg.h
 .\obj\keyboard.o: ../STM32F4xx_StdPeriph_Driver/inc/misc.h
+.\obj\keyboard.o: ../inc/cmsis_os.h
+.\obj\keyboard.o: C:\Keil\ARM\ARMCC\bin\..\include\stddef.h
