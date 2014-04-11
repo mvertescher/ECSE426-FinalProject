@@ -1,6 +1,7 @@
 .\obj\motor.o: ..\src\HS422\motor.c
 .\obj\motor.o: ..\src\HS422\motor.h
 .\obj\motor.o: C:\Keil\ARM\ARMCC\bin\..\include\stdio.h
+.\obj\motor.o: C:\Keil\ARM\ARMCC\bin\..\include\math.h
 .\obj\motor.o: ../CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h
 .\obj\motor.o: ../inc/core_cm4.h
 .\obj\motor.o: C:\Keil\ARM\ARMCC\bin\..\include\stdint.h

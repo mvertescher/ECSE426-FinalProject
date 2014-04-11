@@ -18,10 +18,8 @@ compiling main.c...
   void transmit_keypad_end();
 ..\src\Keyboard\keyboard.h(64): warning:  #1-D: last line of file ends without a newline
   void disableKeyboardINT(void);
-..\src\HS422\motor.h(6): warning:  #1-D: last line of file ends without a newline
+..\src\HS422\motor.h(12): warning:  #1-D: last line of file ends without a newline
   void motorEnable(void);
-..\src\LED\led.h(19): warning:  #1-D: last line of file ends without a newline
-  void enableLEDS(void);
 ../main.c(83): warning:  #550-D: variable "tid_transmit" was set but never used
     osThreadId tid_transmit;
 ../main.c(84): warning:  #550-D: variable "tid_receive" was set but never used
@@ -42,13 +40,9 @@ compiling main.c...
         uint8_t x_flag, y_flag; 
 ../main.c(241): warning:  #177-D: variable "y_flag" was declared but never referenced
         uint8_t x_flag, y_flag; 
-../main.c(266): warning:  #177-D: variable "string" was declared but never referenced
+../main.c(268): warning:  #177-D: variable "string" was declared but never referenced
     char string[5]= {0};
-../main.c(267): warning:  #177-D: variable "roll" was declared but never referenced
-    float roll, pitch;
-../main.c(267): warning:  #177-D: variable "pitch" was declared but never referenced
-    float roll, pitch;
-../main.c: 18 warnings, 0 errors
+../main.c: 15 warnings, 0 errors
 compiling fputc_debug.c...
 compiling accelerometer.c...
 ..\src\accelerometer.c(30): warning:  #68-D: integer conversion resulted in a change of sign
@@ -131,20 +125,26 @@ compiling keyboard.c...
   }
 ..\src\Keyboard\keyboard.c: 2 warnings, 0 errors
 compiling motor.c...
-..\src\HS422\motor.h(6): warning:  #1-D: last line of file ends without a newline
+..\src\HS422\motor.h(12): warning:  #1-D: last line of file ends without a newline
   void motorEnable(void);
-..\src\HS422\motor.c(7): warning:  #177-D: variable "duty" was declared but never referenced
-    uint32_t duty;
-..\src\HS422\motor.c(69): warning:  #1-D: last line of file ends without a newline
-  }
-..\src\HS422\motor.c: 3 warnings, 0 errors
+..\src\HS422\motor.c(17): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                        pitch_dc = meas_pitch + pitch_diff * FEEDBACK_FACTOR;
+..\src\HS422\motor.c(20): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                        pitch_dc = meas_pitch - pitch_diff * FEEDBACK_FACTOR;
+..\src\HS422\motor.c(27): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                        roll_dc = meas_roll + roll_diff * FEEDBACK_FACTOR;
+..\src\HS422\motor.c(30): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+                        roll_dc = meas_roll - roll_diff * FEEDBACK_FACTOR;
+..\src\HS422\motor.c(12): warning:  #550-D: variable "pitch_dc" was set but never used
+        float pitch_dc;
+..\src\HS422\motor.c(13): warning:  #550-D: variable "roll_dc" was set but never used
+        float roll_dc; 
+..\src\HS422\motor.c: 7 warnings, 0 errors
 compiling led.c...
-..\src\LED\led.h(19): warning:  #1-D: last line of file ends without a newline
-  void enableLEDS(void);
-..\src\LED\led.c(203): warning:  #1-D: last line of file ends without a newline
-  }
-..\src\LED\led.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=28376 RO-data=1008 RW-data=140 ZI-data=8716  
+Program Size: Code=29008 RO-data=1008 RW-data=140 ZI-data=20716  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 41 Warning(s).
+".\obj\output.axf" - 0 Error(s), 40 Warning(s).
+</pre>
+</body>
+</html>

@@ -3,12 +3,36 @@
   MotorControl takes angles Roll and Pitch, but since we have only one motor, Roll is the 
   only variable that updates the duty Cycle of our PWM signal
 */
-void motorControl(float pitch, float roll){
-  uint32_t duty;
-  roll = (190*(roll+90)/9)+1200;
-	pitch = (175*(pitch+90)/9)+1200;
-  TIM_SetCompare1(TIM8, roll); // PC6
-	TIM_SetCompare3(TIM8, pitch); // PC8
+void motorControl(float desired_pitch, float desired_roll, float meas_pitch, float meas_roll) {
+  //uint32_t duty;
+  desired_roll = (190*(desired_roll+90)/9)+1200;
+	desired_pitch = (175*(desired_pitch+90)/9)+1200;
+	
+	/* FEEDBACK HERE */
+	float pitch_dc;
+	float roll_dc; 
+	float pitch_diff = fabs(desired_pitch - meas_pitch);
+	if (pitch_diff < FEEDBACK_THRESHOLD) {
+		if (desired_pitch > meas_pitch) {
+			pitch_dc = meas_pitch + pitch_diff * FEEDBACK_FACTOR;
+		}
+		else {
+			pitch_dc = meas_pitch - pitch_diff * FEEDBACK_FACTOR;
+		}	
+	}
+	
+	float roll_diff = fabs(desired_roll - meas_roll);
+	if (roll_diff < FEEDBACK_THRESHOLD) {
+		if (desired_roll > meas_roll) {
+			roll_dc = meas_roll + roll_diff * FEEDBACK_FACTOR;
+		}
+		else {
+			roll_dc = meas_roll - roll_diff * FEEDBACK_FACTOR;
+		}	
+	}
+	
+  TIM_SetCompare1(TIM8, desired_roll); // PC6 ROLL
+	TIM_SetCompare3(TIM8, desired_pitch); // PC8 PITCH
 }
 /*
   Set up of the GPIO pin, Timer and PWM settings for the Motor

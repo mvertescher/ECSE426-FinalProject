@@ -199,7 +199,7 @@ void receive_record_sequence(float *pitchBuffer, float *rollBuffer, float *time_
         rollBuffer[pkt.b2] = pkt.f2;
         
       
-        printf("Secieved recorded data pkt %i \n", pkt.b2);
+        printf("Recieved recorded data pkt %i \n", pkt.b2);
       }
 		}
 }
