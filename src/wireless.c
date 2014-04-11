@@ -247,8 +247,8 @@ void send_packet(uint8_t *pnt) {
 
 void read_packet(packet_t *return_pktpnt) {
     // Determine number of bytes to read
-		uint8_t bytesToRead;
-		CC2500_Read(&bytesToRead, CC2500_RXBYTES,1);
+	uint8_t bytesToRead;
+	CC2500_Read(&bytesToRead, CC2500_RXBYTES,1);
     bytesToRead = bytesToRead & 0x7F;
       
     uint8_t buffer[bytesToRead];
@@ -265,6 +265,29 @@ void read_packet(packet_t *return_pktpnt) {
     CC2500_CommandProbe(CC2500_READBIT, CC2500_SRX);
 }   
     
+
+int get_signal_strength(void) {
+    uint8_t byte; 
+    CC2500_Read(&byte, CC2500_RSSI,1);
+    //printf("RSSI = %i \n",byte);
+    
+    int rssi = (int) byte;
+    
+    /* 
+        1) Read the RSSI status register
+        2) Convert the reading from a hexadecimal number to a decimal number (RSSI_dec)
+        3) If RSSI_dec >= 128 then RSSI_dBm = (RSSI_dec - 256)/2 – RSSI_offset
+        4) Else if RSSI_dec < 128 then RSSI_dBm = (RSSI_dec)/2 – RSSI_offset
+    */
+    int offset = 70;
+    if (rssi >= 128)
+        rssi = (rssi - 256)/2 - offset;
+    else 
+        rssi = (rssi)/2 - offset;   
+    
+    return rssi;
+}
+
 
 void wait_for_idle(void) {
     uint8_t status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);

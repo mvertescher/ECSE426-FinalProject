@@ -15,40 +15,40 @@ void motorControl(float pitch, float roll){
 */
 void motorEnable(){
   
-  RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
-	//Setting PinC6 to Alternate Function of TIM8
-  GPIO_InitTypeDef GPIO_InitStructure;			
-	GPIO_StructInit (&GPIO_InitStructure);
+    RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
+    //Setting PinC6 to Alternate Function of TIM8
+    GPIO_InitTypeDef GPIO_InitStructure;			
+    GPIO_StructInit (&GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_TIM8);
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource6, GPIO_AF_TIM8);
 	
 	//Setting PinC8 to Alternate Function of TIM8		
 	GPIO_StructInit (&GPIO_InitStructure);
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_100MHz;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
-  GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
-  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+    GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP ;
 	GPIO_Init(GPIOC, &GPIO_InitStructure);
-  GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_TIM8);
+    GPIO_PinAFConfig(GPIOC, GPIO_PinSource8, GPIO_AF_TIM8);
   
-  //Enabling TIM8 Clock
-  RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
-  //Set Prescaler to 84
-  uint32_t prescaler = (uint16_t)((SystemCoreClock/2)/1000000)-1; //Clock Counts at 1Mhz
+    //Enabling TIM8 Clock
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM8, ENABLE);
+    //Set Prescaler to 84
+    uint32_t prescaler = (uint16_t)((SystemCoreClock/2)/1000000)-1; //Clock Counts at 1Mhz
   
-  //TIMER SETUP
-  TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-  TIM_TimeBaseStructure.TIM_Period = 20000-1; //Pulse given at every 20ms or 50hz
-  TIM_TimeBaseStructure.TIM_Prescaler = prescaler; 
-  TIM_TimeBaseStructure.TIM_ClockDivision = 0; //Do not Divide Clock
-  TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; 
-  TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
+    //TIMER SETUP
+    TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+    TIM_TimeBaseStructure.TIM_Period = 20000-1; //Pulse given at every 20ms or 50hz
+    TIM_TimeBaseStructure.TIM_Prescaler = prescaler; 
+    TIM_TimeBaseStructure.TIM_ClockDivision = 0; //Do not Divide Clock
+    TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up; 
+    TIM_TimeBaseInit(TIM8, &TIM_TimeBaseStructure);
   
   //PWM SETUP 
   TIM_OCInitTypeDef TIM_OCInitStructure;

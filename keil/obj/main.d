@@ -50,3 +50,4 @@
 .\obj\main.o: ..\src\accelerometer.h
 .\obj\main.o: ..\src\Keyboard\keyboard.h
 .\obj\main.o: ..\src\HS422\motor.h
+.\obj\main.o: ..\src\LED\led.h

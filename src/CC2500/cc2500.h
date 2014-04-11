@@ -156,6 +156,8 @@ typedef struct
 #define CC2500_PARTNUM    0xF0      /* Read only, 0x80 default */
 #define CC2500_VERSION    0xF1      /* Read only, 0x03 default */
 
+/* Received Signal Strength Indication */
+#define CC2500_RSSI       0xF4 
 
 /* FIFO Buffer Access Headers */ // not needed addr = 0x3F
 #define CC2500_TX_SINGLE  0x3F // transmit 1

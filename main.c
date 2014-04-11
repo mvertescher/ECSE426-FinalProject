@@ -14,16 +14,18 @@
 #include "accelerometer.h"
 #include "keyboard.h"
 #include "motor.h"
+#include "led.h"
 
 #define PITCH_FILTER_SIZE   16
 #define ROLL_FILTER_SIZE    16
+#define DIST_FILTER_SIZE    32
 
 #define IS_TRANSMITTER      1
-
 
 #define TRANSMIT_DELAY      10
 #define ACCR_DELAY          10
 #define MOTOR_DELAY         10
+
 
 /*!
  @brief Thread to perform menial tasks such as switching LEDs
@@ -85,7 +87,7 @@ int main (void) {
   
   // Start wireless 
   uint8_t status;
-  status = init_wireless();
+   status = init_wireless();
   printf("CC2500 Ready (%x) \n",status);
   osDelay(1000);
   
@@ -105,6 +107,7 @@ int main (void) {
   
   else {
     motorEnable();
+		enableLEDS(); 
     measurements.follow = 1;
     printf("Receiver starting threads \n");
     
@@ -143,6 +146,11 @@ void receive_thread(void const *argument) {
   printf("Moved to RX (%x) \n",status);
   //osDelay(500);
   
+  ring_buffer_t dist_filter; 
+  int size = DIST_FILTER_SIZE; 
+  int dist_buffer[size];
+  init_buffer(&dist_filter,dist_buffer,size);  
+    
   float f1, f2, value; 
   uint16_t control;
   uint8_t ctrl = 0;
@@ -173,17 +181,21 @@ void receive_thread(void const *argument) {
       ctrl = 0; // reset control
     }
     else if (control == PACKET_CTRL1_PR) {
+      //if (f1  100 || f1 < -100 || f2 > 100 || f2 < -100)
       measurements.pitch = f1;
       measurements.roll = f2;
+        
+      float f = filter_point(get_signal_strength(), &dist_filter);
+      showSignalStrength(f);   
       printf("READ: Pitch = %f  Roll = %f  Control1 = %x  Pkt_index = %i \n",f1,f2,control,ctrl2);
     }
 		
-		else if (control == PACKET_CTRL1_RECORD_BEGIN) {
-			float pitchBuffer[256];
-			float rollBuffer[256];
+	else if (control == PACKET_CTRL1_RECORD_BEGIN) {
+	  float pitchBuffer[256];
+	  float rollBuffer[256];
       float time_interval = f1; 
-			receive_record_sequence(pitchBuffer,rollBuffer,&time_interval);
-			printf("RECV: Record Sequence: \n");
+	  receive_record_sequence(pitchBuffer,rollBuffer,&time_interval);
+	  printf("RECV: Record Sequence: \n");
       int i;
       //for (i = 0; i < 256; i++) {
       //  printf("RECV: Record Sequence: Pitch = %f  Roll = %f \n", pitchBuffer[i], rollBuffer[i]);
@@ -192,10 +204,24 @@ void receive_thread(void const *argument) {
       
       printf("Motors moving sequence, timedelay = %f \n",time_interval); 
       i = 0;
+      uint8_t j;
+      float f1, f2; 
+      float pitchInc, rollInc;  
       while (i < 256) {
-        motorControl(pitchBuffer[i], rollBuffer[i]);
-        printf("Motors moving to angle: index = %i  Pitch = %f  Roll = %f \n",i,pitchBuffer[i],rollBuffer[i]); 
-        osDelay((int)time_interval);
+        j = 0;
+        pitchInc = (pitchBuffer[i+1] - pitchBuffer[i]) / 10;
+        rollInc = (rollBuffer[i+1] - rollBuffer[i]) / 10;
+        f1 = pitchBuffer[i];
+        f2 = rollBuffer[i];
+        while (j < 10) {
+            f1 += pitchInc; 
+            f2 += rollInc;
+            motorControl(f1, f2);
+            printf("Motors moving to angle: index = %i  Pitch = %f  Roll = %f \n",i,pitchBuffer[i],rollBuffer[i]); 
+            j++;
+        }
+        //osDelay((int)time_interval);
+        i++;
       }
       
       osDelay(1000);
@@ -225,9 +251,9 @@ void accelerometer_thread(void const *argument) {
 	init_buffer(&roll_filter,roll_buffer,size);
 	
 	while(1) {		
-			get_pitch_roll(&raw_pitch, &raw_roll);
-			pitch = -filter_point((int) raw_pitch, &pitch_filter); //FIX
-			roll= filter_point((int) raw_roll, &roll_filter);
+	  get_pitch_roll(&raw_pitch, &raw_roll);
+      pitch = -filter_point((int) raw_pitch, &pitch_filter); //FIX
+      roll= filter_point((int) raw_roll, &roll_filter);
       measurements.pitch = pitch;
       measurements.roll = roll;
       //printf("ACCR: Pitch = %f  Roll = %f \n",pitch,roll);
@@ -242,9 +268,9 @@ void motor_thread(void const *argument) {
   uint32_t mscount=0;
 
 	while(1){
-		if(values->follow == 1){
+        if(values->follow == 1){
 			
-      osMutexWait(measureUpdate, osWaitForever);
+            osMutexWait(measureUpdate, osWaitForever);
       
 			motorControl(values->pitch, values->roll);
 			
@@ -260,27 +286,27 @@ void motor_thread(void const *argument) {
       strcat(values->line2,string);
       strcat(values->line2,"  ");
         */    
-      osMutexRelease(measureUpdate);
+        osMutexRelease(measureUpdate);
       
 		}
 		if(values->follow == 0){
-      osSignalWait(0x02, osWaitForever);
-      osMutexWait(measureUpdate, osWaitForever);
-      roll = roll+values->rollIncrement;
-      pitch = pitch+values->pitchIncrement;
-      motorControl(roll,pitch);
-      ++mscount;
-      // Done seq
-      if (mscount >= values->time) {
-        osTimerStop(timerid_motor);
-        mscount=0;
-        // Delay 
-        osDelay(1000);
-        // Move back to follow
-        measurements.follow = 1;
-      }
-      osMutexRelease(measureUpdate);
-		}
+            osSignalWait(0x02, osWaitForever);
+            osMutexWait(measureUpdate, osWaitForever);
+            measurements.roll += values->rollIncrement;
+            measurements.pitch += values->pitchIncrement;
+            motorControl(measurements.pitch,measurements.roll);
+            ++mscount;
+            // Done seq
+            if (mscount >= values->time) {
+                osTimerStop(timerid_motor);
+                mscount=0;
+                // Delay 
+                osDelay(1000);
+                // Move back to follow
+                measurements.follow = 1;
+        }
+        osMutexRelease(measureUpdate);
+        }
     
     if(values->follow == 3){
       osDelay(1000);
@@ -347,6 +373,9 @@ void keyboard_thread(void const *argument) {
           values->follow=0;
           previousRoll= values->roll;
           previousPitch = values->pitch;
+          measurements.rollIncrement = 0;
+          measurements.pitchIncrement = 0;
+          measurements.time = 0;
           osMutexRelease(measureUpdate);
           currentRoll=0;
           

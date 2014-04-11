@@ -4,7 +4,7 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 C:\Users\Matt\Documents\GitHub\ECSE426-FinalProject\keil\rtx.uvproj
-Project File Date:  04/08/2014
+Project File Date:  04/10/2014
 
 <h2>Output:</h2>
 Rebuild target 'Project'
@@ -20,29 +20,35 @@ compiling main.c...
   void disableKeyboardINT(void);
 ..\src\HS422\motor.h(6): warning:  #1-D: last line of file ends without a newline
   void motorEnable(void);
-../main.c(81): warning:  #550-D: variable "tid_transmit" was set but never used
+..\src\LED\led.h(19): warning:  #1-D: last line of file ends without a newline
+  void enableLEDS(void);
+../main.c(83): warning:  #550-D: variable "tid_transmit" was set but never used
     osThreadId tid_transmit;
-../main.c(82): warning:  #550-D: variable "tid_receive" was set but never used
+../main.c(84): warning:  #550-D: variable "tid_receive" was set but never used
     osThreadId tid_receive;
-../main.c(83): warning:  #550-D: variable "tid_accelerometer" was set but never used
+../main.c(85): warning:  #550-D: variable "tid_accelerometer" was set but never used
     osThreadId tid_accelerometer;    
-../main.c(212): warning:  #177-D: variable "a_x" was declared but never referenced
+../main.c(238): warning:  #177-D: variable "a_x" was declared but never referenced
         float a_x, a_y, a_z;
-../main.c(212): warning:  #177-D: variable "a_y" was declared but never referenced
+../main.c(238): warning:  #177-D: variable "a_y" was declared but never referenced
         float a_x, a_y, a_z;
-../main.c(212): warning:  #177-D: variable "a_z" was declared but never referenced
+../main.c(238): warning:  #177-D: variable "a_z" was declared but never referenced
         float a_x, a_y, a_z;
-../main.c(213): warning:  #177-D: variable "aggregateResult" was declared but never referenced
+../main.c(239): warning:  #177-D: variable "aggregateResult" was declared but never referenced
         int32_t aggregateResult;
-../main.c(214): warning:  #177-D: variable "buffer" was declared but never referenced
+../main.c(240): warning:  #177-D: variable "buffer" was declared but never referenced
         uint8_t buffer[6];
-../main.c(215): warning:  #177-D: variable "x_flag" was declared but never referenced
+../main.c(241): warning:  #177-D: variable "x_flag" was declared but never referenced
         uint8_t x_flag, y_flag; 
-../main.c(215): warning:  #177-D: variable "y_flag" was declared but never referenced
+../main.c(241): warning:  #177-D: variable "y_flag" was declared but never referenced
         uint8_t x_flag, y_flag; 
-../main.c(240): warning:  #177-D: variable "string" was declared but never referenced
+../main.c(266): warning:  #177-D: variable "string" was declared but never referenced
     char string[5]= {0};
-../main.c: 15 warnings, 0 errors
+../main.c(267): warning:  #177-D: variable "roll" was declared but never referenced
+    float roll, pitch;
+../main.c(267): warning:  #177-D: variable "pitch" was declared but never referenced
+    float roll, pitch;
+../main.c: 18 warnings, 0 errors
 compiling fputc_debug.c...
 compiling accelerometer.c...
 ..\src\accelerometer.c(30): warning:  #68-D: integer conversion resulted in a change of sign
@@ -132,10 +138,13 @@ compiling motor.c...
 ..\src\HS422\motor.c(69): warning:  #1-D: last line of file ends without a newline
   }
 ..\src\HS422\motor.c: 3 warnings, 0 errors
+compiling led.c...
+..\src\LED\led.h(19): warning:  #1-D: last line of file ends without a newline
+  void enableLEDS(void);
+..\src\LED\led.c(203): warning:  #1-D: last line of file ends without a newline
+  }
+..\src\LED\led.c: 2 warnings, 0 errors
 linking...
-Program Size: Code=27228 RO-data=1008 RW-data=140 ZI-data=8716  
+Program Size: Code=28376 RO-data=1008 RW-data=140 ZI-data=8716  
 FromELF: creating hex file...
-".\obj\output.axf" - 0 Error(s), 36 Warning(s).
-</pre>
-</body>
-</html>
+".\obj\output.axf" - 0 Error(s), 41 Warning(s).

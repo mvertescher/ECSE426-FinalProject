@@ -47,5 +47,7 @@ void receive_keypad(uint8_t *ctrl, float *value);
 void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer, float time_interval);
 void receive_record_sequence(float *pitchBuffer, float *rollBuffer, float *time_interval);
 
+int get_signal_strength(void);
+
 void wait_for_idle(void);
 void print_status(void);
