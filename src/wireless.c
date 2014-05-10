@@ -1,8 +1,14 @@
 #include "wireless.h"
 
+/*
+	Local functions
+*/
 static void send_packet(uint8_t *pnt);
 static void read_packet(packet_t *return_pktpnt);
 
+/*
+	Initialize Wireless Chip
+*/
 uint8_t init_wireless(void) {	
     
     // Setup up CC2500 SPI
@@ -23,7 +29,12 @@ uint8_t init_wireless(void) {
     return CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
 }
 
-
+/*
+	Transmit the pitch and roll over wireless
+	Input:
+	float pitch, float roll
+	uint8_t ctrl2 = indicate what kind of packet we are sending
+*/
 void transmit_pitchroll(float pitch, float roll, uint8_t ctrl2) {
 
     packet_t pkt;
@@ -47,14 +58,19 @@ void transmit_pitchroll(float pitch, float roll, uint8_t ctrl2) {
     
     // Move into transmit state
     uint8_t status = CC2500_CommandProbe(CC2500_WRITEBIT, CC2500_STX);
-    printf("Moved to TX (%x) \n",status);
+    //printf("Moved to TX (%x) \n",status);
     
     // The CC2500 will move back into the idle state when the transmission has been sent 
     //wait_for_idle();
     //osDelay(20);
     
 }
-
+/*
+	Receives the pitch and roll from the transmitter and parses the packet for the angles
+	Input:
+	float* pitch, float* roll  = pointers to the angles
+	uint8_t* ctrl2 = pointer to the control value so that we can update it.
+*/
 uint16_t receive_pitchroll(float* pitch, float* roll, uint8_t* ctrl2) {
   // assume already in RX
     // Wait for a transmisson to be read. When this happens, the CC2500 will move to the idle state
@@ -89,7 +105,9 @@ uint16_t receive_pitchroll(float* pitch, float* roll, uint8_t* ctrl2) {
     return ctrl; 
 }
 
-
+/*
+	Formats a packet for transmitting pitch from a keypad
+*/
 void transmit_keypad_pitch(float pitch) {
     packet_t pkt;
     pkt.f1 = pitch;
@@ -101,7 +119,9 @@ void transmit_keypad_pitch(float pitch) {
     send_packet(pnt);
 }
 
-
+/*
+	Formats a packet for transmitting roll from a keypad
+*/
 void transmit_keypad_roll(float roll) {
     packet_t pkt;
     pkt.f1 = roll;
@@ -112,7 +132,9 @@ void transmit_keypad_roll(float roll) {
     uint8_t *pnt = (uint8_t *) &pkt;
     send_packet(pnt);
 }
- 
+ /*
+	Formats a packet for transmitting time from a keypad
+*/
 void transmit_keypad_time(float time) {
     packet_t pkt;
     pkt.f1 = time;
@@ -123,7 +145,9 @@ void transmit_keypad_time(float time) {
     uint8_t *pnt = (uint8_t *) &pkt;
     send_packet(pnt);
 }
-
+/*
+	Formats a packet to send indicating a start of a keypad sequence
+*/
 void transmit_keypad_begin() {
     packet_t pkt;
     pkt.f1 = 0;
@@ -134,7 +158,9 @@ void transmit_keypad_begin() {
     uint8_t *pnt = (uint8_t *) &pkt;
     send_packet(pnt);
 }
-
+/*
+	Formats a packet to send indicating a end of a keypad sequence
+*/
 void transmit_keypad_end() {
     packet_t pkt;
     pkt.f1 = 0;
@@ -145,7 +171,13 @@ void transmit_keypad_end() {
     uint8_t *pnt = (uint8_t *) &pkt;
     send_packet(pnt);
 }
-
+/*
+	Sends a recorded sequence of angles to the receiver.
+	Input:
+	int size = dummy variable
+	float *pitchBuffer, float *rollBuffer = pointers to the buffers containing the data
+	float time_interval = time interval the sequence should complete in.
+*/
 void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer, float time_interval) {
 		packet_t pkt;
     pkt.f1 = time_interval;
@@ -166,7 +198,6 @@ void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer, f
 			pkt.b2 = index;
 			printf("Sending recorded data pkt Index = %i  Pitch = %f  Roll = %f  \n", index, pkt.f1, pkt.f2);
 			send_packet(pnt);
-			
 			osDelay(30); // Could be 20
       index++;
 		}
@@ -184,7 +215,13 @@ void transmit_record_sequence(int size, float *pitchBuffer, float *rollBuffer, f
 		// Wait for sequence to complete
 		osDelay(5000);
 }
-
+/*
+	Receives a sequence of angles from the transmitter
+	Input:
+	float *pitchBuffer, float *rollBuffer = pointers to the buffers that will store the sequence
+	float *time_interval = pointer to the variable which indicates how long the time interval the sequnce
+		should execute in.
+*/
 void receive_record_sequence(float *pitchBuffer, float *rollBuffer, float *time_interval) {
 		uint8_t ctrl1 = PACKET_CTRL1_RECORD_PKT;
 		uint8_t index;
@@ -203,7 +240,12 @@ void receive_record_sequence(float *pitchBuffer, float *rollBuffer, float *time_
       }
 		}
 }
-
+/*
+	Receive Keypad variables.
+	uint8_t *ctrl = pointer to control value 
+	float *value	= pointer to the value you are expecting in the keypad sequence, i.e. pitch,roll,time
+	
+*/
 void receive_keypad(uint8_t *ctrl, float *value) {
     wait_for_idle();
   
@@ -233,7 +275,11 @@ void receive_keypad(uint8_t *ctrl, float *value) {
 
 }
 
-
+/*
+	Sends a single packet over wireless
+	Input:
+	uint8_t *pnt =  pointer to the packet being sent
+*/
 void send_packet(uint8_t *pnt) {
     // Put data into the TX FIFO buffer  
     CC2500_Write(pnt, CC2500_FIFOADDR, WIRELESS_PKT_DATALEN); // Write to the TX buffer 
@@ -244,7 +290,12 @@ void send_packet(uint8_t *pnt) {
     // The CC2500 will move back into the idle state when the transmission has been sent 
     osDelay(20);
 }
-
+/*
+	Reads packet from wireless chip.
+	Input:
+	packet_t *return_pktpnt = pointer to where received packet will be stored
+	
+*/
 void read_packet(packet_t *return_pktpnt) {
     // Determine number of bytes to read
 	uint8_t bytesToRead;
@@ -265,7 +316,11 @@ void read_packet(packet_t *return_pktpnt) {
     CC2500_CommandProbe(CC2500_READBIT, CC2500_SRX);
 }   
     
-
+/*
+	Returns the signal strength of the wireless chip.
+	Reads the RSSI resgister and converts the values to dB.
+	Return variable is a signed Integer.
+*/
 int get_signal_strength(void) {
     uint8_t byte; 
     CC2500_Read(&byte, CC2500_RSSI,1);
@@ -288,7 +343,11 @@ int get_signal_strength(void) {
     return rssi;
 }
 
-
+/*
+	waits for the CC2500 to enter the Idle State.
+	Returns once it is in Idle State.
+	Every 8ms checks to see if Idle, slightly faster than 100Hz. 
+*/
 void wait_for_idle(void) {
     uint8_t status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
     while ((status & 0x70) != CC2500_STATE_IDLE) {
@@ -297,7 +356,9 @@ void wait_for_idle(void) {
         status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
     }  
 }  
-
+/*
+	Return the status(state) of the CC2500 chip
+*/
 void print_status(void) {
     uint8_t status = CC2500_CommandProbe(CC2500_READBIT, CC2500_SNOP);
     printf("Status (%x) \n",status);

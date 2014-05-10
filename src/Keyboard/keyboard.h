@@ -8,6 +8,8 @@
 
 
 /*
+Pin Assignment for Keypad
+KEYPAD PIN = BOARD PIN
 pin 1 = PD1
 pin 2 = PD2
 pin 3 = PD3
@@ -18,12 +20,15 @@ pin 7 = PD9
 pin 8 = PD10
 */
 
-  /*
+/* The hex values of the Keypad keys
+
 	 1 = 0xee, 2 = 0xed, 3 = 0xeb, A = 0xe7
 	 4 = 0xde, 5 = 0xdd, 6 = 0xdb, B = 0xd7
 	 7 = 0xbe, 8 = 0xbd, 9 = 0xbb, C = 0xb7
 	 * = 0x7e, 0 = 0x7d, # = 0x7b, D = 0x77
-	*/
+	 
+*/
+
  #define ONE  0xEE
  #define TWO  0xED
  #define THREE  0xEB

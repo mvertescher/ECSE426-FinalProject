@@ -1,44 +1,61 @@
 #include "motor.h"
+
+float pitch_angle;
+float roll_angle;
+
 /*
-  MotorControl takes angles Roll and Pitch, but since we have only one motor, Roll is the 
-  only variable that updates the duty Cycle of our PWM signal
+  MotorControl takes angles Roll and Pitch, both the desired angles and the measured angles.
+	It uses these angles to caculate the angle given to the motors based on a simple proportioanl control.
+	Saturation elements were also added increase the angles given exceed |+/-90|.
 */
 void motorControl(float desired_pitch, float desired_roll, float meas_pitch, float meas_roll) {
   //uint32_t duty;
-  desired_roll = (190*(desired_roll+90)/9)+1200;
-	desired_pitch = (175*(desired_pitch+90)/9)+1200;
-	
+
 	/* FEEDBACK HERE */
 	float pitch_dc;
 	float roll_dc; 
-	float pitch_diff = fabs(desired_pitch - meas_pitch);
-	if (pitch_diff < FEEDBACK_THRESHOLD) {
-		if (desired_pitch > meas_pitch) {
-			pitch_dc = meas_pitch + pitch_diff * FEEDBACK_FACTOR;
-		}
-		else {
-			pitch_dc = meas_pitch - pitch_diff * FEEDBACK_FACTOR;
-		}	
+	
+	if (desired_pitch > 90 || desired_pitch < -90 || desired_roll > 90 || desired_roll < -90) {
+		return;
 	}
 	
-	float roll_diff = fabs(desired_roll - meas_roll);
-	if (roll_diff < FEEDBACK_THRESHOLD) {
-		if (desired_roll > meas_roll) {
-			roll_dc = meas_roll + roll_diff * FEEDBACK_FACTOR;
-		}
-		else {
-			roll_dc = meas_roll - roll_diff * FEEDBACK_FACTOR;
-		}	
-	}
+	uint32_t pitch_duty_cycle, roll_duty_cycle;
 	
-  TIM_SetCompare1(TIM8, desired_roll); // PC6 ROLL
-	TIM_SetCompare3(TIM8, desired_pitch); // PC8 PITCH
+	float pitch_diff = desired_pitch - meas_pitch;
+	float roll_diff = desired_roll - meas_roll;
+	
+	roll_angle += FEEDBACK_FACTOR * roll_diff;
+	pitch_angle += FEEDBACK_FACTOR * pitch_diff;
+	
+	if (pitch_angle > 90)
+		pitch_angle = 90;
+	else if (pitch_angle < -90)
+		pitch_angle = -90;
+	
+	pitch_duty_cycle = (uint32_t) (175*(pitch_angle+90)/9)+1200;
+	roll_duty_cycle = (uint32_t) (190*(roll_angle+90)/9)+1200;
+	
+
+	
+	TIM_SetCompare1(TIM8, roll_duty_cycle); // PC6 ROLL
+	TIM_SetCompare3(TIM8, pitch_duty_cycle); // PC8 PITCH
+	
+	//printf("MOTOR: pitch angle: %f  roll angle: %f  pitch_diff: %f  roll_diff: %f \n",pitch_angle,roll_angle,pitch_diff,roll_diff);
+	//printf("MOTOR: Pitch = %f (%f) Roll = %f (%f) | INPUT: Pitch = %i Roll = %i  | DIFF: Pitch %f Roll %f\n",desired_pitch,meas_pitch,desired_roll,meas_roll,pitch_duty_cycle, roll_duty_cycle,pitch_diff,roll_diff);
+	//printf("MOTOR: Pitch = %f (%f) Roll = %f (%f) INPUT: Pitch = %u Roll = %u  DIFF: Pitch %f Roll %f\n",desired_pitch,meas_pitch,desired_roll,meas_roll,pitch_duty_cycle, roll_duty_cycle,pitch_diff,roll_diff);
+
+	
 }
 /*
-  Set up of the GPIO pin, Timer and PWM settings for the Motor
+  Set up of the GPIO pins, Timers and PWM settings for the Motors
+	Roll Motor is on GPIO PC6
+	Pitch Motor is on GPIO PC8
 */
 void motorEnable(){
   
+		roll_angle = 0;
+		pitch_angle = 0;
+	
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOC, ENABLE);
     //Setting PinC6 to Alternate Function of TIM8
     GPIO_InitTypeDef GPIO_InitStructure;			

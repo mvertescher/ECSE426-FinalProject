@@ -70,24 +70,6 @@ typedef struct
 #define CC2500_SPI_CS_GPIO_CLK           RCC_AHB1Periph_GPIOE
 
 
-
-//#define EZ430_RF2500T_SPI_INT1_PIN              GPIO_Pin_0                  /* PE.00 */
-//#define EZ430_RF2500T_SPI_INT1_GPIO_PORT        GPIOE                       /* GPIOE */
-//#define EZ430_RF2500T_SPI_INT1_GPIO_CLK         RCC_AHB1Periph_GPIOE
-//#define EZ430_RF2500T_SPI_INT1_EXTI_LINE        EXTI_Line0
-//#define EZ430_RF2500T_SPI_INT1_EXTI_PORT_SOURCE EXTI_PortSourceGPIOE
-//#define EZ430_RF2500T_SPI_INT1_EXTI_PIN_SOURCE  EXTI_PinSource0
-//#define EZ430_RF2500T_SPI_INT1_EXTI_IRQn        EXTI0_IRQn 
-
-//#define EZ430_RF2500T_SPI_INT2_PIN              GPIO_Pin_1                  /* PE.01 */
-//#define EZ430_RF2500T_SPI_INT2_GPIO_PORT        GPIOE                       /* GPIOE */
-//#define EZ430_RF2500T_SPI_INT2_GPIO_CLK         RCC_AHB1Periph_GPIOE
-//#define EZ430_RF2500T_SPI_INT2_EXTI_LINE        EXTI_Line1
-//#define EZ430_RF2500T_SPI_INT2_EXTI_PORT_SOURCE EXTI_PortSourceGPIOE
-//#define EZ430_RF2500T_SPI_INT2_EXTI_PIN_SOURCE  EXTI_PinSource1
-//#define EZ430_RF2500T_SPI_INT2_EXTI_IRQn        EXTI1_IRQn 	 
-
-
 /* Command strobes */ 
 #define CC2500_SRES       0x30    /* Chip reset */
 #define CC2500_SFSTXON    0x31
@@ -183,9 +165,8 @@ typedef struct
 #define CC2500_STATE_RXFIFO_OVERFLOW    0x60
 #define CC2500_STATE_TXFIFO_UNDERFLOW   0x70
 
-/* */ 
+/* Misc */ 
 #define CC2500_RXBYTES                  0xFB
-
 #define CC2500_PACKETLENGTH							SMARTRF_SETTING_PKTLEN
 
 
@@ -202,13 +183,8 @@ typedef struct
 
 void CC2500_Init(CC2500_InitTypeDef *CC2500_InitStruct);
 void CC2500_SmartRF_Config(void);
-//void LIS302DL_InterruptConfig(LIS302DL_InterruptConfigTypeDef *LIS302DL_InterruptConfigStruct);
-//void LIS302DL_FilterConfig(LIS302DL_FilterConfigTypeDef *LIS302DL_FilterConfigStruct);
-//void LIS302DL_LowpowerCmd(uint8_t LowPowerMode);
-//void LIS302DL_FullScaleCmd(uint8_t FS_value);
-//void LIS302DL_DataRateCmd(uint8_t DataRateValue);
 void CC2500_RebootCmd(void);
-//void LIS302DL_ReadACC(int32_t* out);
+
 uint8_t CC2500_CommandProbe(uint8_t rw, uint8_t CmdPrbAddr);
 uint8_t CC2500_TransmitBytes(uint8_t* pBuffer, uint16_t NumByteToSend);
 uint8_t CC2500_RecieveBytes(uint8_t* pBuffer, uint16_t NumByteToRead);

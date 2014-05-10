@@ -22,17 +22,23 @@ typedef struct
 }packet_t;
 
 
+/*
+	Packet control types, used to define the type of a packet for processing
+*/
 #define PACKET_CTRL1_PR         	 0x1
 #define PACKET_CTRL1_BEGIN      	 0x2
 #define PACKET_CTRL1_PITCH      	 0x3
 #define PACKET_CTRL1_ROLL        	 0x4
 #define PACKET_CTRL1_TIME        	 0x5
 #define PACKET_CTRL1_END         	 0x6
-
 #define PACKET_CTRL1_RECORD_BEGIN  0x7
 #define PACKET_CTRL1_RECORD_PKT    0x8
 #define PACKET_CTRL1_RECORD_END    0x9
 
+
+/*
+	Wireless application driver functions
+*/
 uint8_t init_wireless(void);
 void transmit_pitchroll(float pitch, float roll, uint8_t ctrl2);
 uint16_t receive_pitchroll(float* pitch, float* roll, uint8_t* ctrl2);

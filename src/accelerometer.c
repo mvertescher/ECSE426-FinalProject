@@ -1,6 +1,8 @@
 #include "accelerometer.h"
 
-
+/*
+	Initialize the Accelerometer for Use
+*/
 void init_accelerometer(void) {	
 	LIS3DSH_InitTypeDef lis_init_s;
 	lis_init_s.Power_Mode_Output_DataRate = LIS3DSH_DATARATE_100; 			/* OUT data rate 100 Hz / 400 Hz */
@@ -11,6 +13,7 @@ void init_accelerometer(void) {
 	lis_init_s.Self_Test = LIS3DSH_SELFTEST_NORMAL;  // NORMAL,P,M      /* Self test */
 	LIS3DSH_Init(&lis_init_s); //this also configures the low-level interface	
 	
+	/*The Following Fixes Bugs in the Accelerometer Drivers*/
 	uint8_t ctrl = 0x67; 
 	LIS3DSH_Write(&ctrl, LIS3DSH_CTRL_REG4, 1);
 	
@@ -35,7 +38,9 @@ void init_accelerometer(void) {
 	LIS3DSH_Write(&ctrl, LIS3DSH_OFF_Z, 1);
 }
 
-
+/*
+	Read Axis Data from the accerlerometer and updates the pitch and roll angles
+*/
 void get_pitch_roll(float *pitch_pnt, float *roll_pnt) { 
   uint8_t buffer[6];
  

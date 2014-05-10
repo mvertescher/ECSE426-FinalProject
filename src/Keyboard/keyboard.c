@@ -1,5 +1,11 @@
 #include "keyboard.h"
 
+/*
+	Reads Numeric values from keypad and returns the value once the Key has been pressed
+	Input:
+	float* value = pointer to the key that has been pressed
+	osThreadId* tid_keyboard = pointer to keyboard thread ID used for signal waiting
+*/
 void readValue(float* value, osThreadId* tid_keyboard){
   uint8_t flag =1;
   int8_t sign = 0;
@@ -13,6 +19,14 @@ void readValue(float* value, osThreadId* tid_keyboard){
     osSignalClear(*tid_keyboard, 0x08);
   }
 }
+/*
+	Reads a numeric value from the keypad. Returns the value once the Key D has been pressed.
+	Input:
+	uint8_t keyCurrent = current key that has been pressed
+	float* value = value we are reading from keypad, i.e. pitch,roll or time
+	uint8_t* flag = flag used to indicate when the read is done, as this function will be used in a loop 
+	int8_t* sign = sign of the number, positive or negative. 
+*/
 void returnValue(uint8_t keyCurrent, float* value, uint8_t* flag, int8_t* sign){
 
   if(keyCurrent==STAR){
@@ -30,6 +44,10 @@ void returnValue(uint8_t keyCurrent, float* value, uint8_t* flag, int8_t* sign){
       *sign = 0;
 		}
 }
+/*
+	Reads a Key from the keypad.
+	Returns the 8bit value corresponding to the key
+*/
 uint8_t readKeyboard(void){
 	
 	uint8_t output=0;
@@ -44,12 +62,11 @@ uint8_t readKeyboard(void){
 	enableKeyboard();
 	return output;
 }
-	/*
-	 1 = 0xee, 2 = 0xed, 3 = 0xeb, A = 0xe7
-	 4 = 0xde, 5 = 0xdd, 6 = 0xdb, B = 0xd7
-	 7 = 0xbe, 8 = 0xbd, 9 = 0xbb, C = 0xb7
-	 * = 0x7e, 0 = 0x7d, # = 0x7b, D = 0x77
-	*/
+
+/*
+	Converts the value read from the Key to a numeric value.
+	Returns 11 if the key that was pressed was not a number
+*/
 uint8_t keyToNumber(uint8_t key){
 	if(key==0xEE){
 		return 1;
@@ -83,6 +100,9 @@ uint8_t keyToNumber(uint8_t key){
 	}
 	return 11;
 }
+/*
+	Enables the Keyboard Pins' Interrupts
+*/
 void enableKeyboardINT(void){
 	//Enable SYSCFG Bus to gain access to SYSCFG_EXTICRx
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG, ENABLE);
@@ -127,6 +147,9 @@ void enableKeyboardINT(void){
 	NVIC_Init(&NVIC_InitStruct);
 	
 }
+/*
+	Disables Interrupts for the Keyboard
+*/
 void disableKeyboardINT(){
 	NVIC_InitTypeDef NVIC_InitStruct;
 	NVIC_InitStruct.NVIC_IRQChannel = EXTI1_IRQn;
@@ -147,12 +170,19 @@ void disableKeyboardINT(){
 	NVIC_InitStruct.NVIC_IRQChannelSubPriority = 3;
 	NVIC_Init(&NVIC_InitStruct);
 }
+/*
+	Enables the Keyboard
+*/
 void enableKeyboard(void){
 
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);					// Enable AHB1 Bus with GPIO D pins connections
 	enableRowInput();
 	enableColumnOutput();
 }
+/*
+	Read the Rows of the Keyboard
+	Returns an 8bit value
+*/
 uint8_t readRow(void){
 	uint8_t output=0;
 	output = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1);
@@ -161,6 +191,10 @@ uint8_t readRow(void){
 	output = output + (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_6)<<3);
 	return output;
 }
+/*
+	Read the Columns of the Keyboard
+	Returns an 8bit value
+*/
 uint8_t readColumn(void){
 	uint8_t output=0;
 	output = GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_7);
@@ -169,6 +203,10 @@ uint8_t readColumn(void){
 	output = output + (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_10)<<3);
 	return output;
 }
+/*
+	Sets the Values of the Rows to either high or low
+	depending on the input
+*/
 void setRow(uint8_t value){
 	if(value == 0){
 		GPIO_ResetBits (GPIOD, GPIO_Pin_1);
@@ -183,6 +221,10 @@ void setRow(uint8_t value){
 		GPIO_SetBits (GPIOD, GPIO_Pin_6);
 	}
 }
+/*
+	Sets the Values of the Columns to either high or low
+	depending on the input
+*/
 void setColumn(uint8_t value){
 	if(value == 0){
 		GPIO_ResetBits (GPIOD, GPIO_Pin_7);
@@ -197,6 +239,9 @@ void setColumn(uint8_t value){
 		GPIO_SetBits (GPIOD, GPIO_Pin_10);
 	}
 }
+/*
+	Set Columns to Read Mode
+*/
 void enableColumnInput(void){
 	//Define the Pin settings and set to Output Mode
 	GPIO_InitTypeDef GPIO_InitStructure;			
@@ -217,6 +262,9 @@ void enableColumnInput(void){
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
+/*
+	Set Columns to Write Mode
+*/
 void enableColumnOutput(void){
 	//Define the Pin settings and set to Output Mode
 	GPIO_InitTypeDef GPIO_InitStructure;			
@@ -237,6 +285,9 @@ void enableColumnOutput(void){
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_10;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
+/*
+	Set Rows to Write Mode
+*/
 void enableRowOutput(void){
 	//Define the Pin settings and set to Output Mode
 	GPIO_InitTypeDef GPIO_InitStructure;			
@@ -258,6 +309,9 @@ void enableRowOutput(void){
 	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6;
 	GPIO_Init(GPIOD, &GPIO_InitStructure);
 }
+/*
+	Set Rows to Read Mode
+*/
 void enableRowInput(void){
 	//Define the Pin settings and set to Output Mode
 	GPIO_InitTypeDef GPIO_InitStructure;			

@@ -2,6 +2,8 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_conf.h"
 
+/*Macros used for the Signal Strength LED Indicator, 
+	Sets the bounds of expected signal strength*/
 #define HIGH_SIGNAL   -55
 #define LOW_SIGNAL    -80
 #define LED_GRADIENT  100/(HIGH_SIGNAL-LOW_SIGNAL)

@@ -1,5 +1,8 @@
 #include "led.h"
 
+/*
+	Enables the on board Blue LED
+*/
 void enableBlueLED(void){
   //Setting Up RED LED for PWM
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
@@ -39,7 +42,9 @@ void enableBlueLED(void){
   TIM_OC4PreloadConfig(TIM4, TIM_OCPreload_Enable); //Enable Preload of CCR Reg
   TIM_Cmd(TIM4, ENABLE); //Enable/Start Timer
 }
-
+/*
+	Enables the on board Red LED
+*/
 void enableRedLED(void){
   //Setting Up RED LED for PWM
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
@@ -79,6 +84,9 @@ void enableRedLED(void){
   TIM_OC3PreloadConfig(TIM4, TIM_OCPreload_Enable); //Enable Preload of CCR Reg
   TIM_Cmd(TIM4, ENABLE); //Enable/Start Timer
 }
+/*
+	Enables the on board Orange LED
+*/
 void enableOrangeLED(void){
   //Setting Up RED LED for PWM
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
@@ -118,6 +126,9 @@ void enableOrangeLED(void){
   TIM_OC2PreloadConfig(TIM4, TIM_OCPreload_Enable); //Enable Preload of CCR Reg
   TIM_Cmd(TIM4, ENABLE); //Enable/Start Timer
 }
+/*
+	Enables the on board Green LED
+*/
 void enableGreenLED(void){
   //Setting Up RED LED for PWM
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD, ENABLE);
@@ -157,6 +168,10 @@ void enableGreenLED(void){
   TIM_OC1PreloadConfig(TIM4, TIM_OCPreload_Enable); //Enable Preload of CCR Reg
   TIM_Cmd(TIM4, ENABLE); //Enable/Start Timer
 }
+/*
+	Sets the Blue LED's intensity.
+	Value must be between 0-100%
+*/
 void set_Blue_LED_Intensity(uint8_t value){
     if(value<=100){
         TIM_SetCompare4(TIM4, 10*value);
@@ -165,6 +180,10 @@ void set_Blue_LED_Intensity(uint8_t value){
         TIM_SetCompare4(TIM4, 999);
     }
 }
+/*
+	Sets the Red LED's intensity.
+	Value must be between 0-100%
+*/
 void set_Red_LED_Intensity(uint8_t value){
     if(value<=100){
         TIM_SetCompare3(TIM4, 10*value);
@@ -173,6 +192,10 @@ void set_Red_LED_Intensity(uint8_t value){
         TIM_SetCompare3(TIM4, 999);
     }
 }
+/*
+	Sets the Orange LED's intensity.
+	Value must be between 0-100%
+*/
 void set_Orange_LED_Intensity(uint8_t value){
     if(value<=100){
         TIM_SetCompare2(TIM4, 10*value);
@@ -181,6 +204,10 @@ void set_Orange_LED_Intensity(uint8_t value){
         TIM_SetCompare2(TIM4, 999);
     }
 }
+/*
+	Sets the Green LED's intensity.
+	Value must be between 0-100%
+*/
 void set_Green_LED_Intensity(uint8_t value){
     if(value<=100){
         TIM_SetCompare1(TIM4, 10*value);
@@ -189,12 +216,19 @@ void set_Green_LED_Intensity(uint8_t value){
         TIM_SetCompare1(TIM4, 999);
     }
 }
+/*
+	Enables all on board LEDS
+*/
 void enableLEDS(void){
   enableBlueLED();
   enableRedLED();
   enableOrangeLED();
   enableGreenLED();
 }
+/*
+	Adjusts the Brightness of the LEDS based on the signal strength
+	measured by the wireless chip.
+*/
 void showSignalStrength(float signal){
   set_Blue_LED_Intensity((uint8_t)(LED_GRADIENT*signal+LED_OFFSET));
   set_Red_LED_Intensity((uint8_t)(LED_GRADIENT*signal+LED_OFFSET));

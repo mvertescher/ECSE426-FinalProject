@@ -1,6 +1,12 @@
 #include "filter.h"
 #include <stdio.h>
-
+/*
+	Initializes the Moving Average Filter of specified size.
+	Input:
+	ring_buffer_t *buffer = pointer to Buffer definition
+	int *arr = pointer to buffer array 
+	int buffer_size = desired buffer size
+*/
 void init_buffer(ring_buffer_t *buffer, int *arr, int buffer_size) {
 	int i;
 	for (i = 0; i < buffer_size; i++) 
@@ -11,7 +17,15 @@ void init_buffer(ring_buffer_t *buffer, int *arr, int buffer_size) {
 	buffer->current = 0;	
 	buffer->denominator = ((float) buffer_size * ((float) buffer_size + 1)) / 2;	
 }
+/*
+	Filter Data Point.
+	Input:
+	int16_t data_point = data point to be filtered 
+	ring_buffer_t* buffer = pointer to moving average filter
+	Return;
+	(Float) Average of the Filter
 
+*/
 float filter_point(int16_t data_point, ring_buffer_t* buffer) {
 	buffer->array[buffer->current] = data_point;
 	int size = buffer->size;		
