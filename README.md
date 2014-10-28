@@ -1,5 +1,12 @@
 ECSE-426-Final-Project
 ======================
+A few images of the final result: 
+![alt tag](https://raw.github.com/mvertescher/ECSE426-FinalProject/master/IMAGES/board1.jpeg)
+
+![alt tag](https://raw.github.com/mvertescher/ECSE426-FinalProject/master/IMAGES/topview.jpeg)
+
+![alt tag](https://raw.github.com/mvertescher/ECSE426-FinalProject/master/IMAGES/sideview.jpeg)
+
 
 Pin assignments for SPI2 to the EZ430-RF2500T chipset:
 
