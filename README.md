@@ -1,10 +1,12 @@
 ECSE-426-Final-Project
 ======================
-A few images of the final result: 
+A few images of the orientation listener: 
 ![alt tag](https://raw.githubusercontent.com/mvertescher/ECSE426-FinalProject/master/IMAGES/board1.jpg)
 
+Top view: 
 ![alt tag](https://raw.githubusercontent.com/mvertescher/ECSE426-FinalProject/master/IMAGES/topview.jpg)
 
+Side view:
 ![alt tag](https://raw.githubusercontent.com/mvertescher/ECSE426-FinalProject/master/IMAGES/sideview.jpg)
 
 
