@@ -1,5 +1,8 @@
 ECSE-426-Final-Project
 ======================
+The full system: 
+![alt tag](https://raw.githubusercontent.com/mvertescher/ECSE426-FinalProject/master/IMAGES/fullsys.jpg)
+
 A few images of the orientation listener: 
 ![alt tag](https://raw.githubusercontent.com/mvertescher/ECSE426-FinalProject/master/IMAGES/board1.jpg)
 
